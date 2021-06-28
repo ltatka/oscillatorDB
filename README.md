@@ -2,8 +2,8 @@
 
 ## Set Up
 Using this software requires:
-*PyMongo
-*dnsPython
+* PyMongo
+* dnsPython
 
 These can be installed via pip or conda. Alternatively, environment.yml is a conda environment containing all the necessary packages. To use it:
 ```

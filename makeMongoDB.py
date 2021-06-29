@@ -1,50 +1,39 @@
-
-from pymongo import MongoClient
 import os
-import pymongo
-import cleanUpMethods as clean
+import mongoMethods as mm
+
+'''
+Running this script will add new models to the database. There is currently no safeguard to prevent duplicate entries.
+You will probably need to edit this depending on how your files are structured.
+Please use carefully
+'''
 
 
-class Connect(object):
-    @staticmethod
-    def get_connection():
-        return MongoClient("mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net")
-
-connection = Connect.get_connection()
+connection = mm.get_connection()
+col = mm.collection
 
 # Path to models to add
-dir = 'C:\\Users\\tatka\\Desktop\\Models\\3node_oscillator\\trimmed_antimony'
+dir = "C:\\Users\\tatka\\Desktop\\Models\\3node_fail\\antimony"
 nNodes = 3
-oscillator = True
+oscillator = False
 
-# user: data
-# pwd:  VuRWQ
-astr = "mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net"
-client = MongoClient(astr)
-database_names = client.list_database_names()
-db = client['networks']
-col = db['networks']
+modelList = []
+os.chdir(dir)
+for filename in os.listdir(dir):
+    os.chdir(dir)
+    if not filename.endswith('.ant'):
+        continue
 
-# modelList = []
-# os.chdir(dir)
-# for filename in os.listdir(dir):
-#     os.chdir(dir)
-#     os.chdir(filename)
-#
-#     ant_lines = clean.loadAntimonyText(f'{filename}.ant')
-#     nReactions = clean.getNumReactions(ant_lines)
-#     ant = clean.loadAntimonyText_noLines(f'{filename}.ant')
-#
-#     modelDict = {}
-#     modelDict['ID'] = filename
-#     modelDict['num_nodes'] = nNodes
-#     modelDict['num_reactions'] = nReactions
-#     modelDict['model'] = ant
-#     modelList.append(modelDict)
-#
-# col.insert_many(modelList)
 
-query = { 'ID': '4590' }
-doc = col.find(query)
-for x in doc:
-    print(x['model'])
+    ant_lines = mm.load_lines(filename)
+    nReactions = mm.get_nReactions(ant_lines)
+    ant = mm.load_antimony(filename)
+
+    modelDict = {'ID': filename[11:-4],
+                 'num_nodes': nNodes,
+                 'num_reactions': nReactions,
+                 'model': ant,
+                 'oscillator': oscillator}
+    modelList.append(modelDict)
+
+col.insert_many(modelList)
+

@@ -33,8 +33,6 @@ connection = mm.get_connection()
 
 Queries are specified by a dictionary containing the traits of interest. There are two query helper methods in the module to get a list of IDs or the antimony strings of models that match the query. 
 ```
-import mongoMethods as mm
-
 # Get IDs of oscillators with 3 nodes
 query = { "num_nodes" : 3, "oscillator" : True)}
 model_IDS = get_ids(query)
@@ -43,6 +41,19 @@ model_IDS = get_ids(query)
 query = { "ID" : "1234" }
 ant = get_antimony(query)
 ```
+More general queries can be made with the function query_database() which accepts a query dictionary and returns a cursor object containing the dictionaries for all matching entries. The cursor object can be accessed and interated over as if it were a list of dictionaries.
+```
+# Get a list of all models with 3 nodes
+query = { 'num_nodes' : 3 }
+models = query_data(query)
+
+# Get the ID of the first model
+ID = models[0]['ID']
+
+# Print the number of reactions in each model
+for model in models:
+    print(model['num_reactions'])
+
 
 The collection can also be directly queried. Importing mongoMethods is still required to access the database and the collection must be accessed prior to query.
 ```

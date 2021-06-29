@@ -21,6 +21,7 @@ The data base stores:
 * num_reactions: number of reactions (int)
 * model: antimony string for the model
 * oscillator: If the model oscillates or not (boolean). True if does, False if it does not. String 'damped' if the model is damped.
+    **NOTE: oscillator classification for non-oscillators and damped models is questionable at the moment.**
 
 ## Connecting to MongoDB
 After importing mongoMethods, establish a connection to the database.

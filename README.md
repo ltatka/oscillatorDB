@@ -41,7 +41,7 @@ model_IDS = get_ids(query)
 query = { "ID" : "1234" }
 ant = get_antimony(query)
 ```
-More general queries can be made with the function query_database() which accepts a query dictionary and returns a cursor object containing the dictionaries for all matching entries. The cursor object can be accessed and interated over as if it were a list of dictionaries.
+More general queries can be made with the function ```query_database()``` which accepts a query dictionary and returns a cursor object containing the dictionaries for all matching entries. The cursor object can be accessed and interated over as if it were a list of dictionaries.
 ```
 # Get a list of all models with 3 nodes
 query = { 'num_nodes' : 3 }

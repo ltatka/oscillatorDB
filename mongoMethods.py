@@ -1,5 +1,5 @@
+import os
 from pymongo import MongoClient
-
 
 # user: data
 # pwd:  VuRWQ
@@ -30,12 +30,14 @@ def print_entries(cursor=cur, n=None):
             else:
                 break
 
+
 def get_connection():
     '''
     Connect to the mongoDB
     :return: a MongoClient object connected to the database
     '''
     return MongoClient("mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net")
+
 
 def load_lines(path):
     '''
@@ -52,6 +54,7 @@ def load_lines(path):
         lines = lines[1:]
     return lines
 
+
 def load_antimony(path):
     '''
     Load an antimony model from a local machine split into lines
@@ -64,6 +67,7 @@ def load_antimony(path):
         f.close()
     return ant
 
+
 def get_nReactions(ant):
     '''
     Count how many reactions are in the model
@@ -73,11 +77,13 @@ def get_nReactions(ant):
     # Takes a list of strings for each line in ant file
     nReactions = 0
     for line in ant:
-        if not line.startswith('var'):
+        if '->' in line and not line.startswith('#'):
             if line.startswith('k'):
                 break
             nReactions += 1
     return nReactions
+
+
 
 def get_ids(query):
     '''
@@ -89,7 +95,11 @@ def get_ids(query):
     result = []
     for x in doc:
         result.append(x['ID'])
+    if len(result) == 0:
+        print('No entries found.')
+        return None
     return result
+
 
 def get_antimony(query):
     '''
@@ -109,3 +119,95 @@ def get_antimony(query):
     else:
         return result
 
+
+def yes_or_no(question):
+    '''
+    Prompt the user to answer a yes or no question
+    :param question: The question to be asked (str)
+    :return: True if yes, False if no (boolean)
+    '''
+    answered = False
+    while not answered:
+        reply = str(input(question + ' (y/n): ')).lower().strip()
+        if reply[0] == 'y':
+            return True
+        elif reply[0] == 'n':
+            return False
+        else:
+            print('Please answer y or n.')
+
+
+def add_many(path, num_nodes, oscillator):
+    '''
+    Add several antimony models to the database from a local folder containing .ant files.
+    :param path: Path to the folder where the antimony models are located.
+    :param num_nodes: The number of nodes in these models
+    :param oscillator: Oscillation status. True for oscillator, False for non oscillator (booleans), or 'damped' (str)
+    :return: None
+    '''
+    if not os.path.exists(path):
+        raise ValueError("Invalid path")
+    modelList = []
+    os.chdir(path)
+    for filename in os.listdir(path):
+        if not filename.endswith('.ant'):
+            continue
+        ant_lines = load_lines(filename)
+        nReactions = get_nReactions(ant_lines)
+        ant = load_antimony(filename)
+
+        if filename.startswith('FAIL_Model_'):
+            ID = filename[11:-4]
+        elif filename.startswith('Model_'):
+            ID = filename[6:-4]
+        else:
+            ID = filename[-4]
+        if not (oscillator == True or oscillator == False or oscillator == 'damped'):
+            raise ValueError("Oscillator argument must be True, False, or 'damped'")
+        modelDict = {'ID': ID,
+                     'num_nodes': num_nodes,
+                     'num_reactions': nReactions,
+                     'model': ant,
+                     'oscillator': oscillator}
+        modelList.append(modelDict)
+    collection.insert_many(modelList)
+    print(f"Successfully added {len(modelList)} models to database")
+
+
+def delete_many(query):
+    '''
+    Delete models that match the query from the database
+    :param query: A dictionary with the target traits of models to be deleted.
+    :return: None
+    '''
+    if query == {}:
+        print('Deleting the entire database is not allowed.')
+        return None
+    proceed = yes_or_no(f"Are you sure you want to delete all models that math the query {str(query)}?")
+    if proceed:
+        collection.delete_many(query)
+    print(f"Successfully deleted models matching the query {str(query)}")
+
+
+def delete_by_path(path):
+    '''
+    Delete models from the database that match models in a local folder.
+    This is useful if models from a local folder were incorrectly or inadvertently added to the database.
+    :param path: Path to local folder where the .ant files are located.
+    :return: None
+    '''
+    if not os.path.exists(path):
+        raise ValueError('Invalid path.')
+    os.chdir(path)
+    count = 0
+    for filename in os.listdir(path):
+        if filename.endswith('.ant'):
+            if filename.startswith('FAIL_Model_'):
+                ID = filename[11:-4]
+            elif filename.startswith('Model_'):
+                ID = filename[6:-4]
+            else:
+                ID = filename[-4]
+            collection.deleteOne({'ID': ID})
+            count += 1
+    print(f"Successfully deleted {count} models from the database.")

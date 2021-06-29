@@ -45,6 +45,6 @@ entries = collection.find(query)
 
 # Get the IDs of models that match the query
 for entry in entries:
-    print(entry['ID']
+    print(entry['ID'])
 ```
 

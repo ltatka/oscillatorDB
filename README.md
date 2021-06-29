@@ -53,7 +53,7 @@ ID = models[0]['ID']
 # Print the number of reactions in each model
 for model in models:
     print(model['num_reactions'])
-
+```
 
 The collection can also be directly queried. Importing mongoMethods is still required to access the database and the collection must be accessed prior to query.
 ```

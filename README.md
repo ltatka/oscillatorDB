@@ -2,7 +2,7 @@
 
 ## Set Up
 Clone this repository:
-'''git clone https://github.com/really-lilly/oscillatorDB.git'''
+```git clone https://github.com/really-lilly/oscillatorDB.git```
 
 This module requires:
 * PyMongo

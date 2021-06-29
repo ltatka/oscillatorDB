@@ -19,11 +19,22 @@ num_reactions: number of reactions (int)
 model: antimony string for the model
 oscillator: If the model oscillates or not (boolean). True if does, False if it does not. String 'damped' if the model is damped.
 
+## Connecting to MongoDB
+After importing mongoMethods, establish a connection to the database and access the data.
+```
+import mongoMethods as mm
+
+connection = mm.get_connection()
+col = mm.collection
+```
 ## Queries
 
 Queries are specified by a dictionary containing the traits of interest. There are two query helper methods in the module to get a list of IDs or the antimony strings of models that match the query. 
 ```
 import mongoMethods as mm
+
+connection = mm.get_connection()
+col = mm.collection
 
 # Get IDs of oscillators with 3 nodes
 query = { "num_nodes" : 3, "oscillator" : True)}
@@ -38,9 +49,11 @@ The collection can also be directly queried. Importing mongoMethods is still req
 ```
 import mongoMethods as mm
 
+connection = mm.get_connection()
+col = mm.collection
+
 # Get oscillators with 3 nodes and 5 reactions
 query = { "num_nodes" : 3, "num_reactions" : 5, "oscillator" : True }
-collection = mm.collection
 entries = collection.find(query)
 
 # Get the IDs of models that match the query

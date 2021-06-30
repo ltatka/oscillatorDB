@@ -1,5 +1,9 @@
 import os
 from pymongo import MongoClient
+import warnings
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # user: data
 # pwd:  VuRWQ
@@ -18,6 +22,7 @@ def print_entries(cursor=cur, n=None):
     :param n: optional, print out the first n entries. By default n is none and all entries are printed.
     :return: print out of every entry dictionary
     '''
+    print(f"There are {cursor.count()} entries in the database")
     if not n:
         for doc in cursor:
             print(doc)
@@ -102,6 +107,8 @@ def query_database(query):
     :param query: A dictionary of the desired model traits
     :return: A cursor object containing the dictionaries for all matching models
     '''
+    cur = collection.find(query)
+    print(f'Found {cur.count()} matching entries.')
     return collection.find(query)
 
 def get_ids(query):

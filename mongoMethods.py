@@ -84,6 +84,25 @@ def get_nReactions(ant):
     return nReactions
 
 
+def get_nNodes(ant):
+    nNodes = 0
+    # Skip the first line if it is a comment
+    if ant[0].startswith('#'):
+        ant = ant[1:]
+    for line in ant:
+        if line.startswith('var'):
+            nNodes += 1
+        else:
+            break
+    return nNodes
+
+def query_database(query):
+    '''
+    Retrieve all entries that match the query
+    :param query: A dictionary of the desired model traits
+    :return: A C
+    '''
+    return collection.find(query)
 
 def get_ids(query):
     '''
@@ -99,6 +118,12 @@ def get_ids(query):
         print('No entries found.')
         return None
     return result
+
+def get_model_by_id(id):
+    # If the id is provided as an integer, convert to string
+    if isinstance(id, int):
+        id = str(id)
+    return collection.find_one({'ID': id})
 
 
 def get_antimony(query):
@@ -137,11 +162,10 @@ def yes_or_no(question):
             print('Please answer y or n.')
 
 
-def add_many(path, num_nodes, oscillator):
+def add_many(path, oscillator, num_nodes = None):
     '''
     Add several antimony models to the database from a local folder containing .ant files.
     :param path: Path to the folder where the antimony models are located.
-    :param num_nodes: The number of nodes in these models
     :param oscillator: Oscillation status. True for oscillator, False for non oscillator (booleans), or 'damped' (str)
     :return: None
     '''
@@ -150,10 +174,15 @@ def add_many(path, num_nodes, oscillator):
     modelList = []
     os.chdir(path)
     for filename in os.listdir(path):
-        if not filename.endswith('.ant'):
+        ext = os.path.splittext(filename)[1]
+        if not ext == '.ant' or :
             continue
         ant_lines = load_lines(filename)
         nReactions = get_nReactions(ant_lines)
+        if not num_nodes:
+            nNodes = get_nNodes(ant)
+        else:
+            nNodes = num_nodes
         ant = load_antimony(filename)
 
         if filename.startswith('FAIL_Model_'):
@@ -165,7 +194,7 @@ def add_many(path, num_nodes, oscillator):
         if not (oscillator == True or oscillator == False or oscillator == 'damped'):
             raise ValueError("Oscillator argument must be True, False, or 'damped'")
         modelDict = {'ID': ID,
-                     'num_nodes': num_nodes,
+                     'num_nodes': nNodes,
                      'num_reactions': nReactions,
                      'model': ant,
                      'oscillator': oscillator}
@@ -173,8 +202,16 @@ def add_many(path, num_nodes, oscillator):
     collection.insert_many(modelList)
     print(f"Successfully added {len(modelList)} models to database")
 
+def add_ant_extension(path):
+    os.chdir(path)
+    count = 0
+    for filename in os.listdir(path):
+        os.rename(filename, filename[:-4])
+        count += 1
+    print(f'Successfully added .ant extension to {count} files')
 
-def delete_many(query):
+#add_many("C:\\Users\\tatka\\Desktop\\Models\\3node_oscillator\\trimmed_antimony", True)
+def delete_by_query(query):
     '''
     Delete models that match the query from the database
     :param query: A dictionary with the target traits of models to be deleted.

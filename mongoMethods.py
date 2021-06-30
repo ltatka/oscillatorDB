@@ -174,13 +174,13 @@ def add_many(path, oscillator, num_nodes = None):
     modelList = []
     os.chdir(path)
     for filename in os.listdir(path):
-        ext = os.path.splittext(filename)[1]
-        if not ext == '.ant' or :
+        print(filename)
+        if not filename.endswith('.ant') or os.path.isdir(filename):
             continue
         ant_lines = load_lines(filename)
         nReactions = get_nReactions(ant_lines)
         if not num_nodes:
-            nNodes = get_nNodes(ant)
+            nNodes = get_nNodes(ant_lines)
         else:
             nNodes = num_nodes
         ant = load_antimony(filename)
@@ -189,8 +189,11 @@ def add_many(path, oscillator, num_nodes = None):
             ID = filename[11:-4]
         elif filename.startswith('Model_'):
             ID = filename[6:-4]
+        elif filename.endswith('.ant'):
+            ID = filename[:-4]
         else:
-            ID = filename[-4]
+            ID = filename
+        print(ID)
         if not (oscillator == True or oscillator == False or oscillator == 'damped'):
             raise ValueError("Oscillator argument must be True, False, or 'damped'")
         modelDict = {'ID': ID,
@@ -202,6 +205,8 @@ def add_many(path, oscillator, num_nodes = None):
     collection.insert_many(modelList)
     print(f"Successfully added {len(modelList)} models to database")
 
+
+
 def add_ant_extension(path):
     os.chdir(path)
     count = 0
@@ -210,7 +215,7 @@ def add_ant_extension(path):
         count += 1
     print(f'Successfully added .ant extension to {count} files')
 
-#add_many("C:\\Users\\tatka\\Desktop\\Models\\3node_oscillator\\trimmed_antimony", True)
+
 def delete_by_query(query):
     '''
     Delete models that match the query from the database

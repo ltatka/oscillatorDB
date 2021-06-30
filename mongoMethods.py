@@ -100,7 +100,7 @@ def query_database(query):
     '''
     Retrieve all entries that match the query
     :param query: A dictionary of the desired model traits
-    :return: A C
+    :return: A cursor object containing the dictionaries for all matching models
     '''
     return collection.find(query)
 

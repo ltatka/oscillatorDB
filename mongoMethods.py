@@ -174,7 +174,6 @@ def add_many(path, oscillator, num_nodes = None):
     modelList = []
     os.chdir(path)
     for filename in os.listdir(path):
-        print(filename)
         if not filename.endswith('.ant') or os.path.isdir(filename):
             continue
         ant_lines = load_lines(filename)
@@ -193,7 +192,6 @@ def add_many(path, oscillator, num_nodes = None):
             ID = filename[:-4]
         else:
             ID = filename
-        print(ID)
         if not (oscillator == True or oscillator == False or oscillator == 'damped'):
             raise ValueError("Oscillator argument must be True, False, or 'damped'")
         modelDict = {'ID': ID,

@@ -92,12 +92,10 @@ Add oscillating networks from the folder ant_folder
 ```
 import mongoMethods as mm
 
-connection = mm.get_connection()
+
 path = "C:\\Users\\user\\ant_folder"
 
-mm.add_many(path, True)
-
-# If the species are not listed at the top of the antimony file
+# True indicates oscillating model
 mm.add_many(path, True, num_nodes=3)
 ```
 

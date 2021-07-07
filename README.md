@@ -120,4 +120,12 @@ Models can also be deleted by query. This is useful if you want to delete a spec
 ```mm.delete_by_query({ 'ID' : '12345' })```
 Please be careful when deleting by query. If your query is not specific enough, you may end up permanently deleting other models from the database as well.
 
-**Suggestions welcome**
+## Log
+
+### 2021-06-28
+* Remove all damped and non oscillating models
+
+### 2021-06-28
+Uploaded all models.
+
+

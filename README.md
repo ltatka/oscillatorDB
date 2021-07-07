@@ -13,6 +13,7 @@ These can be installed via pip or conda. Alternatively, environment.yml is a con
 conda env create -f environment.yml
 conda activate oscillatorDB
 ```
+21-07-07 update: currently the environment.yml file only works for windows. Will fix later.
 ## Database Description
 
 The data base stores:

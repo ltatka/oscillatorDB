@@ -109,7 +109,7 @@ Add oscillating networks from the folder ant_folder
 import mongoMethods as mm
 
 
-path = "C:\\Users\\user\\ant_folder"
+path = "/home/user/ant_folder"
 
 # True indicates oscillating model
 mm.add_many(path, True, num_nodes=3)

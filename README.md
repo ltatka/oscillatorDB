@@ -13,7 +13,7 @@ These can be installed via pip or conda. Alternatively, environment.yml is a con
 conda env create -f environment.yml
 conda activate oscillatorDB
 ```
-21-07-07 update: currently the environment.yml file only works for windows. Will fix later.
+
 ## Database Description
 
 The data base stores:
@@ -21,9 +21,9 @@ The data base stores:
 * num_nodes: number of species (int)
 * num_reactions: number of reactions (int)
 * model: antimony string for the model
-* oscillator: If the model oscillates or not (boolean). True if does, False if it does not. String 'damped' if the model is damped.
-
-    **NOTE: oscillator classification for non-oscillators and damped models is questionable at the moment.**
+* oscillator: If the model oscillates or not (boolean). True if does, False if it does not. 
+    * Models are filtered so none go to infinity
+    * TODO: analyze models for mass conserved reactions
 
 
 ## Queries
@@ -135,12 +135,11 @@ Models can also be deleted by query. This is useful if you want to delete a spec
 ```mm.delete_by_query({ 'ID' : '12345' })```
 Please be careful when deleting by query. If your query is not specific enough, you may end up permanently deleting other models from the database as well.
 
-## Log
+## What's in the database
+Last updated 2021-07-15
 
-### 2021-06-28
-* Remove all damped and non oscillating models
-
-### 2021-06-28
-Uploaded all models.
-
+* 10 node oscillators
+* 10 node controls (non-oscillators)
+* 3 node oscillators
+* 3 node controls
 

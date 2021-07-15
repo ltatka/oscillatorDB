@@ -3,7 +3,6 @@ from pymongo import MongoClient
 import warnings
 import tellurium as te
 
-
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # user: data
@@ -102,6 +101,7 @@ def get_nNodes(ant):
             break
     return nNodes
 
+
 def query_database(query):
     '''
     Retrieve all entries that match the query
@@ -111,6 +111,7 @@ def query_database(query):
     cur = collection.find(query)
     print(f'Found {cur.count()} matching entries.')
     return collection.find(query)
+
 
 def get_ids(query):
     '''
@@ -126,6 +127,7 @@ def get_ids(query):
         print('No entries found.')
         return None
     return result
+
 
 def get_model_by_id(id):
     # If the id is provided as an integer, convert to string
@@ -170,7 +172,7 @@ def yes_or_no(question):
             print('Please answer y or n.')
 
 
-def add_many(path, oscillator, num_nodes = None):
+def add_many(path, oscillator, num_nodes=None):
     '''
     Add several antimony models to the database from a local folder containing .ant files.
     :param path: Path to the folder where the antimony models are located.
@@ -210,7 +212,6 @@ def add_many(path, oscillator, num_nodes = None):
         modelList.append(modelDict)
     collection.insert_many(modelList)
     print(f"Successfully added {len(modelList)} models to database")
-
 
 
 def add_ant_extension(path):
@@ -259,7 +260,8 @@ def delete_by_path(path):
             collection.deleteOne({'ID': ID})
             count += 1
     print(f"Successfully deleted {count} models from the database.")
-    
+
+
 def get_sbml(query, sbml_path):
     id_list = get_ids(query)
     if not os.path.exists(sbml_path) or not os.path.isdir(sbml_path):
@@ -275,3 +277,6 @@ def get_sbml(query, sbml_path):
         except:
             continue
     print(f"Exported {count} of {total} models to {sbml_path}")
+
+
+get_connection()

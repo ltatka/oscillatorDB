@@ -25,27 +25,44 @@ The data base stores:
 
     **NOTE: oscillator classification for non-oscillators and damped models is questionable at the moment.**
 
-## Connecting to MongoDB
-After importing mongoMethods, establish a connection to the database.
+
+## Queries
+
+### Simple Queries
+Queries are specified by a dictionary containing the traits of interest. There are two query helper methods in the module to get a list of IDs or the antimony strings of models that match the query. 
+
+#### Get IDs
 ```
 import mongoMethods as mm
 
-connection = mm.get_connection()
-```
-## Queries
-
-Queries are specified by a dictionary containing the traits of interest. There are two query helper methods in the module to get a list of IDs or the antimony strings of models that match the query. 
-```
 # Get IDs of oscillators with 3 nodes
 query = { "num_nodes" : 3, "oscillator" : True)}
 model_IDS = mm.get_ids(query)
+```
+#### Get antimony strings
+```
+import mongoMethods as mm
 
 # Get antimony string for model 12345
 query = { "ID" : "1234" }
 ant = mm.get_antimony(query)
 ```
-More general queries can be made with the function ```query_database()``` which accepts a query dictionary and returns a cursor object containing the dictionaries for all matching entries. The cursor object can be accessed and interated over as if it were a list of dictionaries.
+#### get SBML files
 ```
+import mongoMethods as mm
+
+# Get SBML files for all oscillating 3-node models:
+query = {"num_nodes" : 3, "oscillator" True}
+path = "~/path/to/SBML_directory"  # Directory to store SBML files (will be created if it doesn't exist already)
+mm.get_sbml(query, path)
+```
+
+### Custom Queries
+More general queries can be made with the function ```query_database()``` which accepts a query dictionary and returns a cursor object containing the dictionaries for all matching entries. The cursor object can be accessed and interated over as if it were a list of dictionaries.
+
+```
+import mongoMethods as mm
+
 # Get a list of all models with 3 nodes
 query = { 'num_nodes' : 3 }
 models = mm.query_database(query)

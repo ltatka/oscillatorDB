@@ -93,7 +93,7 @@ for entry in entries:
 
 ## Adding to Database
 
-New models can be added en masse provided that all antimony files are stored in a single folder. You will also need to provide the oscillation status (True, False, 'damped'). The number of nodes/species will automatically be counted provided that the antimony file starts with listing the species as shown below. 
+New models can be added en masse provided that all antimony files are stored in a single folder. You will also need to provide the oscillation status (True, False). The number of nodes/species will automatically be counted provided that the antimony file starts with listing the species as shown below. 
 '''
 var S0
 var S1

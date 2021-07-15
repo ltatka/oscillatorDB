@@ -47,7 +47,7 @@ import mongoMethods as mm
 query = { "ID" : "1234" }
 ant = mm.get_antimony(query)
 ```
-#### get SBML files
+#### Get SBML files
 ```
 import mongoMethods as mm
 
@@ -75,13 +75,11 @@ for model in models:
     print(model['num_reactions'])
 ```
 
-The collection can also be directly queried. Importing mongoMethods is still required to access the database and the collection must be accessed prior to query.
+The collection can also be directly queried after directly connecting to the database collection
 ```
 import mongoMethods as mm
 
-connection = mm.get_connection()
-
-# Access the collection prior to query
+# Connect to the database collection
 collection = mm.collection
 
 # Get oscillators with 3 nodes and 5 reactions

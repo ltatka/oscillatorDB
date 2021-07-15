@@ -23,7 +23,7 @@ The data base stores:
 * model: antimony string for the model
 * oscillator: If the model oscillates or not (boolean). True if does, False if it does not. 
     * Models are filtered so none go to infinity
-    * TODO: analyze models for mass conserved reactions
+* mass_conserved: True if there are no reactions that violate mass conservation (eg. A + B -> A). False otherwise
 
 
 ## Queries

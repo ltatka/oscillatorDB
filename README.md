@@ -7,6 +7,7 @@ Clone this repository:
 This module requires:
 * PyMongo
 * dnsPython
+* tellurium
 
 These can be installed via pip or conda. Alternatively, environment.yml is a conda environment containing all the necessary packages. To use it:
 ```

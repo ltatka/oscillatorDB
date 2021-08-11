@@ -174,7 +174,11 @@ def get_model_by_id(id):
     # If the id is provided as an integer, convert to string
     if isinstance(id, int):
         id = str(id)
-    return collection.find_one({'ID': id})
+    result = collection.find_one({'ID': id})
+    if not result:
+        print(f'Model {id} not found.')
+    else:
+        return result
 
 
 def get_antimony(query):

@@ -128,47 +128,47 @@ def get_ids(query):
         return None
     return result
 
-def isMassConserved(ant):
-    lines = ant.split('\n')
-    for line in lines:
-        if '->' in line and not line.startswith('#'):
-            line = line.replace(' ', '')  # strip spaces
-            # Get rid of rate law
-            reaction = line.split(';')[0]
-            # separate products and reactants by splitting at ->
-            reaction = line.split('->')
-            rxnType = ''
-            # Get reaction type by number of reactants and products
-            if '+' in reaction[0]:
-                rxnType += 'bi-'
-            else:
-                rxnType += 'uni-'
-            # Now we do the same thing for the product half
-            if len(reaction) > 1:
-                if '+' in reaction[1]:
-                    rxnType += 'bi'
-                else:
-                    rxnType += 'uni'
-
-            if rxnType == 'uni-bi':
-                # Separate products and reactant
-                products = reaction[1].split('+')
-                reactant = reaction[0]
-                if reactant == products[0] or reactant == products[1]:
-                    # mass is not conserved,
-                    return False
-                    # If we find a reaction that violates mass conservation, we can move to the next model
-                    break
-            elif rxnType == 'bi-uni':
-                reactants = reaction[0].split('+')
-                product = reaction[1]
-                if product == reactants[0] or product == reactants[1]:
-                    # mass is not conserved,
-                    return False
-                    # If we find a reaction that violates mass conservation, we can move to the next model
-                    break
-    # If we make it this far, mass is conserved
-    return True
+# def isMassConserved(ant):
+#     lines = ant.split('\n')
+#     for line in lines:
+#         if '->' in line and not line.startswith('#'):
+#             line = line.replace(' ', '')  # strip spaces
+#             # Get rid of rate law
+#             reaction = line.split(';')[0]
+#             # separate products and reactants by splitting at ->
+#             reaction = line.split('->')
+#             rxnType = ''
+#             # Get reaction type by number of reactants and products
+#             if '+' in reaction[0]:
+#                 rxnType += 'bi-'
+#             else:
+#                 rxnType += 'uni-'
+#             # Now we do the same thing for the product half
+#             if len(reaction) > 1:
+#                 if '+' in reaction[1]:
+#                     rxnType += 'bi'
+#                 else:
+#                     rxnType += 'uni'
+#
+#             if rxnType == 'uni-bi':
+#                 # Separate products and reactant
+#                 products = reaction[1].split('+')
+#                 reactant = reaction[0]
+#                 if reactant == products[0] or reactant == products[1]:
+#                     # mass is not conserved,
+#                     return False
+#                     # If we find a reaction that violates mass conservation, we can move to the next model
+#                     break
+#             elif rxnType == 'bi-uni':
+#                 reactants = reaction[0].split('+')
+#                 product = reaction[1]
+#                 if product == reactants[0] or product == reactants[1]:
+#                     # mass is not conserved,
+#                     return False
+#                     # If we find a reaction that violates mass conservation, we can move to the next model
+#                     break
+#     # If we make it this far, mass is conserved
+#     return True
 
 def get_model_by_id(id):
     # If the id is provided as an integer, convert to string
@@ -217,7 +217,7 @@ def yes_or_no(question):
             print('Please answer y or n.')
 
 
-def add_many(path, oscillator, num_nodes=None):
+def add_many(path, oscillator, massConserved, num_nodes=None):
     '''
     Add several antimony models to the database from a local folder containing .ant files.
     :param path: Path to the folder where the antimony models are located.
@@ -253,7 +253,8 @@ def add_many(path, oscillator, num_nodes=None):
                      'num_nodes': nNodes,
                      'num_reactions': nReactions,
                      'model': ant,
-                     'oscillator': oscillator}
+                     'oscillator': oscillator,
+                     'mass_conserved' : massConserved}
         modelList.append(modelDict)
     collection.insert_many(modelList)
     print(f"Successfully added {len(modelList)} models to database")
@@ -302,7 +303,7 @@ def delete_by_path(path):
                 ID = filename[6:-4]
             else:
                 ID = filename[-4]
-            collection.deleteOne({'ID': ID})
+            collection.delete_one({'ID': ID})
             count += 1
     print(f"Successfully deleted {count} models from the database.")
 

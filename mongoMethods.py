@@ -291,5 +291,36 @@ def get_sbml(query, sbml_path):
             continue
     print(f"Exported {count} of {total} models to {sbml_path}")
 
+def findMisProcessed(antimony):
+    lines = antimony.splitlines()
+    speciesList = []
+    for line in lines:
+        if line.startswith('var') or line.startswith('ext'):
+            if line not in speciesList:
+                speciesList.append(line)
+            else:
+                return True, antimony
+    return False, None
+
+
+def deleteBadModels(query, writeOut=False, destinationPath=None):
+    results = mm.query_database(query)
+    processed = 0
+    count = 0
+    if destinationPath:
+        os.chdir(destinationPath)
+    for model in results:
+        isMisProcessed, antimony = findMisProcessed(model['model'])
+        if isMisProcessed:
+            count += 1
+            mm.delete_by_query({'ID': model['ID']}, yesNo=False)
+        processed += 1
+        if writeOut:
+            with open(model['ID']+'.ant', "w") as f:
+                f.write(model['model'])
+                f.close()
+    print(f'Deleted {count} of {processed} models :(')
+
+
 
 get_connection()

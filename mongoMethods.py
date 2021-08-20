@@ -232,7 +232,7 @@ def add_ant_extension(path):
     print(f'Successfully added .ant extension to {count} files')
 
 
-def delete_by_query(query):
+def delete_by_query(query, yesNo=True):
     '''
     Delete models that match the query from the database
     :param query: A dictionary with the target traits of models to be deleted.
@@ -241,10 +241,14 @@ def delete_by_query(query):
     if query == {}:
         print('Deleting the entire database is not allowed.')
         return None
-    proceed = yes_or_no(f"Are you sure you want to delete all models that math the query {str(query)}?")
-    if proceed:
+    if yesNo:
+        proceed = yes_or_no(f"Are you sure you want to delete all models that math the query {str(query)}?")
+        if proceed:
+            collection.delete_many(query)
+            print(f"Successfully deleted models matching the query {str(query)}")
+    else:
         collection.delete_many(query)
-    print(f"Successfully deleted models matching the query {str(query)}")
+
 
 
 def delete_by_path(path):

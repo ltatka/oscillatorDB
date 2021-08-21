@@ -44,6 +44,18 @@ def get_connection():
     return MongoClient("mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net")
 
 
+def get_collection_size(onlyOscillators=True):
+    if onlyOscillators:
+        results = collection.find({'oscillator': True})
+        return results.count()
+    else:
+        return collection.count()
+
+
+def get_random_oscillator(n=1):
+    count = get_collection_size()
+    return collection.find()[randrange(count)]
+
 def load_lines(path):
     '''
     Load an antimony model from a local machine split into lines

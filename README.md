@@ -13,7 +13,9 @@ These can be installed via pip or conda. Alternatively, environment.yml is a con
 ```
 conda env create -f environment.yml
 conda activate oscillatorDB
-```
+
+ ```
+ DO NOT INSTALL bson into this environment. It will break everything and you'll waste an entire day trying to fix it and then just end up re-cloning the repo. Trust me, I know.
 
 ## Database Description
 

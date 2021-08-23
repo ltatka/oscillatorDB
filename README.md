@@ -15,7 +15,7 @@ conda env create -f environment.yml
 conda activate oscillatorDB
 
  ```
- DO NOT INSTALL bson into this environment. It will break everything and you'll waste an entire day trying to fix it and then just end up re-cloning the repo. Trust me, I know.
+ DO NOT INSTALL bson into this environment. It will break everything and you'll waste an entire day trying to fix it and then just end up re-cloning the repo. Trust me, I know. Don't think it will be a good idea to back up the database and google how to do it. Don't implent the accepted answer on StackOverflow. Don't mess with the environment. Do not do what I have done.
 
 ## Database Description
 

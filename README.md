@@ -117,7 +117,7 @@ import mongoMethods as mm
 path = "/home/user/ant_folder"
 
 # True indicates oscillating model
-mm.add_many(path, True, num_nodes=3)
+mm.add_many(path, True, num_nodes=3)   #add_many(path, oscillator, massConserved, num_nodes=None)
 ```
 
 It may be necessary to delete models from the database if they've been erroneously added. **Be catious**, deleting models is permanent and effects the entire database.

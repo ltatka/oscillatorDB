@@ -334,6 +334,13 @@ def deleteBadModels(query, writeOut=False, destinationPath=None):
                 f.close()
     print(f'Deleted {count} of {processed} models :(')
 
+def print_attributes():
+    # Print the attributes stored for each model
+    sample_model = collection.find_one({"num_nodes": 3})
+    for key in sample_model.keys():
+        print(key)
+
+
 
 
 get_connection()

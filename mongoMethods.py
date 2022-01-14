@@ -349,4 +349,3 @@ def print_random_oscillator():
 
 get_connection()
 
-print_random_oscillator()

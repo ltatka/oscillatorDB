@@ -340,7 +340,13 @@ def print_attributes():
     for key in sample_model.keys():
         print(key)
 
+def print_random_oscillator():
+    result = query_database({"num_nodes":3, "oscillator": True})
+    i = randrange(0, result.count())
+    print(result[i]["model"])
 
 
 
 get_connection()
+
+print_random_oscillator()

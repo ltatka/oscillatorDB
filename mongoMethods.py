@@ -115,15 +115,18 @@ def get_nNodes(ant):
     return nNodes
 
 
-def query_database(query):
+def query_database(query, returnLength=False):
     '''
     Retrieve all entries that match the query
     :param query: A dictionary of the desired model traits
     :return: A cursor object containing the dictionaries for all matching models
     '''
-    cur = collection.find(query)
-    print(f'Found {collection.count_documents(query)} matching entries.')
-    return collection.find(query)
+    length = collection.count_documents(query)
+    print(f'Found {length} matching entries.')
+    if returnLength:
+        return collection.find(query), length
+    else:
+        return collection.find(query)
 
 
 def get_ids(query):

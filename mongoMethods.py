@@ -122,7 +122,7 @@ def query_database(query):
     :return: A cursor object containing the dictionaries for all matching models
     '''
     cur = collection.find(query)
-    print(f'Found {cur.count()} matching entries.')
+    print(f'Found {collection.count_documents(query)} matching entries.')
     return collection.find(query)
 
 

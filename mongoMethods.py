@@ -47,15 +47,16 @@ def get_connection():
 
 def get_collection_size(onlyOscillators=True):
     if onlyOscillators:
-        results = collection.find({'oscillator': True})
+        results = collection.find({'oscillator': True, 'num_nodes': 3})
         return results.count()
     else:
         return collection.count()
 
 
-def get_random_oscillator(n=1):
-    count = get_collection_size()
-    return collection.find()[randrange(count)]
+def get_random_oscillator():
+    result = query_database({'oscillator': True, 'num_nodes': 3})
+    count = collection.count_documents({'oscillator': True, 'num_nodes': 3})
+    return result[randrange(count)]
 
 def load_lines(path):
     '''

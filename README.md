@@ -1,16 +1,59 @@
 # oscillatorDB
 
-## Recent Updates
+## Recent Updates (2022-05-20)
 * All unused or redundant fields have been removed. 
 * The field "oscillator" has been removed. To find oscillators, use "modelType": "oscillator"
-* There is now a defined set of possible model types for the field modelType. Currently these are "oscillator" and "random"
-    * You will not be able to add a model unless it has a modelType tag of one of these two types
-    * If you want to add an additional type to the list:
-        ```add_model_type(new_type)``` with new_type being a string
-    * This will update your <b>local</b> copy of oscillatorDB, but the modelType list is not tied to the database. Unless you push changes or do a pull request, neither <b>the databse</b> nor users will 'know' about the new model type (but your model WILL be added).
-    * To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
-* There is a new method to add a single model called ```add_model(antString, modelType)```
-    * Arguments: antString - The antimony string for the model to be added
+* There is now a predifined list of possible modelTypes: "oscillator" or "random" (see below)
+* There is a new method to add a single model called ```add_model(antString, modelType)``` (see below)
+    
+
+### The "modelType" field
+There is now a defined set of possible model types for the field modelType. Currently these are "oscillator" and "random"
+* These are stored as a set at the top of the mongoMethods.py file
+* You will not be able to add a model unless it has a modelType tag of one of these two types
+* If you want to add an additional type to the list, add it to the set in mongoMethods.py
+* This will update your <b>local</b> copy of oscillatorDB, but the modelType list is not tied to the database. Unless you push changes or do a pull request, neither <b>the databse</b> nor users will 'know' about the new model type (but your model WILL be added).
+* To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
+* It's helpful to put all known info into the optional arguments and leave as few blanks as possible, but in the future I will restructure stuff so you can analyze the reactions from here.
+
+#### Example: 
+Input:
+```
+import mongoMethods as mm
+mm.get_model_types()
+```
+Output:
+```
+{'oscillator', 'random'}
+```
+Adding a model that is not one of these two types will throw an error:
+
+Input:
+```
+mm.add_model(<antString>, "bistable")
+```
+Output:
+```
+Exception: 'bistable' is not a valid modelType.
+Double check spelling or add a new modelType with add_model_type('bistable')
+```
+First add the new model type to mongoMethods.py and then try again:
+
+Input:
+```
+mm.add_model(<antString>, "bistable")
+mm.get_model_types()
+```
+Output:
+```
+Model successfully added.
+{'oscillator', 'random', 'bistable'}
+```
+Note that the new model will be added to the databse with the new type. All users will be able to see the new model and its modelType tag in the database, but unless you push the changes to the mongoMethods.py file, no one else (including the database) will know about this new type.
+
+### New add_model method
+* ```add_model(antString, modelType)```
+* Arguments: antString - The antimony string for the model to be added
                  modelType - (string) model type from list of current model types
     * Optional args: 
        ID: (str) model's ID, populated automatically if left blank
@@ -22,27 +65,36 @@
            random network: uni-uni, uni-bi, bi-uni, bi-bi
        autocatalysisPresent: boolean, True if there is an autocatalytic reaction
        degredationPresent: boolean, True if there is a degradation reaction
-       
-### Example: 
-Input:
+
+The antimony string must be formatted as follows:
 ```
-import mongoMethods as mm
-mm.get_model_types()
+antimony_string = '''
+var S0                        # Species must be declared first using 'var' or 'ext' (getting the correct num_nodes count depends on this!)
+var S1
+var S2
+S1 -> S1+S0; k0*S1      
+S2 + S0 -> S0; k1*S2*S0
+S2 -> S2+S1; k2*S2
+S0 -> S1; k3*S0
+S1 -> S2; k4*S1
+S2 -> S2+S2; k5*S2
+k0 = 2.58                     # Rate constants must start with "k"
+k1 = 25.10                    # The number of rate constants must equal the number of reactions
+k2 = 5.69
+k3 = 12.40
+k4 = 28.62
+k5 = 63.57
+S0 = 1.0
+S1 = 5.0
+S2 = 9.0'''
 ```
-Output:
+Adding the new model:
 ```
-{'oscillator', 'random'}
+mm.add_model(antimony_string, "oscillator", num_nodes=3, num_reactions=6, autocatalysis=True)
 ```
-Adding a model that is not one of these two types will throw an error:
-Input:
-```
-mm.add_model(<antString>, "bistable")
-```
-Output:
-```
-Exception: 'bistable' is not a valid modelType.
-Double check spelling or add a new modelType with add_model_type
-```
+If left blank, the fields ID, num_nodes, and num_reactions will automatically be populated. Any other optional arguments that are left blank will be None.
+
+
 ## Set Up
 Clone this repository:
 ```git clone https://github.com/really-lilly/oscillatorDB.git```

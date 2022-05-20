@@ -9,12 +9,13 @@
 
 ### The "modelType" field
 There is now a defined set of possible model types for the field modelType. Currently these are "oscillator" and "random"
-    * These are stored as a set at the top of the mongoMethods.py file
-    * You will not be able to add a model unless it has a modelType tag of one of these two types
-    * If you want to add an additional type to the list, add it to the set in mongoMethods.py
-    * This will update your <b>local</b> copy of oscillatorDB, but the modelType list is not tied to the database. Unless you push changes or do a pull request, neither <b>the databse</b> nor users will 'know' about the new model type (but your model WILL be added).
-    * To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
-    * It's helpful to put in all the optional arguments whose values you know, but in the future I will restructure stuff so you can analyze the reactions from here.
+* These are stored as a set at the top of the mongoMethods.py file
+* You will not be able to add a model unless it has a modelType tag of one of these two types
+* If you want to add an additional type to the list, add it to the set in mongoMethods.py
+* This will update your <b>local</b> copy of oscillatorDB, but the modelType list is not tied to the database. Unless you push changes or do a pull request, neither <b>the databse</b> nor users will 'know' about the new model type (but your model WILL be added).
+* To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
+* It's helpful to put all known info into the optional arguments and leave as few blanks as possible, but in the future I will restructure stuff so you can analyze the reactions from here.
+
 #### Example: 
 Input:
 ```

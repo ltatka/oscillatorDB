@@ -35,7 +35,7 @@ mm.add_model(<antString>, "bistable")
 Output:
 ```
 Exception: 'bistable' is not a valid modelType.
-Double check spelling or add a new modelType with add_model_type('bistable')
+Double check spelling or add a new modelType
 ```
 First add the new model type to mongoMethods.py and then try again:
 

@@ -4,7 +4,7 @@
 - [oscillatorDB](#oscillatordb)
   * [Recent Updates (2022-05-20)](#recent-updates--2022-05-20-)
     + [The "modelType" field](#the--modeltype--field)
-      - [Example:](#example-)
+      - [Example - modelType Field:](#example---modeltype-field-)
     + [New add_model method](#new-add-model-method)
   * [Set Up](#set-up)
   * [Database Schema](#database-schema)
@@ -18,8 +18,7 @@
   * [Adding to Database](#adding-to-database)
     + [Adding a Single Model](#adding-a-single-model)
     + [Adding en Masse (USE CAUTION)](#adding-en-masse--use-caution-)
-        * [EXAMPLE:](#example-)
-
+        * [Exampel - Adding Models en Masse:](#exampel---adding-models-en-masse-)
 
 
 
@@ -39,7 +38,7 @@ There is now a defined set of possible model types for the field modelType. Curr
 * To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
 * It's helpful to put all known info into the optional arguments and leave as few blanks as possible, but in the future I will restructure stuff so you can analyze the reactions from here.
 
-#### Example: 
+#### Example - modelType Field: 
 Input:
 ```
 import mongoMethods as mm
@@ -277,7 +276,7 @@ This will also work if the first line is a comment. If your antimony file does n
 
 **NOTE: There is currently no safeguard to prevent adding duplicate models to the database. Running the same add_many command twice will duplicate the models previously added.**
 
-##### EXAMPLE: 
+##### Exampel - Adding Models en Masse: 
 Add oscillating networks from the folder ant_folder
 ```
 import mongoMethods as mm

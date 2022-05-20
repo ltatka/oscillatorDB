@@ -97,7 +97,8 @@ def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None,
     if not is_valid_ant_string(antString):
         return
     if modelType not in model_types:
-        raise Exception(f"'{modelType}' is not a valid modelType.\nDouble check spelling or add a new modelType\n")
+        raise Exception(f"'{modelType}' is not a valid modelType.\nDouble check spelling or add a new modelType with "
+                        f"'add_model_type('{modelType}')'\n")
     _, length = query_database({"ID": ID}, returnLength=True, printSize=False)
     if length > 0: # Check if the ID is a duplicate
         raise Exception(f"Unable to add model. A model with the ID {ID} already exists.\n")
@@ -279,8 +280,10 @@ def get_sbml(query, sbml_path):
 
 
 
-def print_attributes():
-    # Print the attributes stored for each model
+def print_schema():
+    # Print the schema for the database
+    # as you can see, this method is a bit flawed in that it assumes this sample_model will have the maximum
+    # number of schema
     sample_model = collection.find_one({"num_nodes": 3})
     for key in sample_model.keys():
         print(key)

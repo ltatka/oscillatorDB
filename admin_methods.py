@@ -1,11 +1,15 @@
 import os
 import mongoMethods as mm
 
+'''
+Please don't use any of these without talking to Lilly
+'''
+
 def update_model(query, update):
     newValue = {"$set" : update}
     mm.collection.update_one(query, newValue)
 
-''' Please talk to Lilly before using any of these:'''
+
 def add_many(path, oscillator, massConserved, num_nodes=None):
     '''
     Add several antimony models to the database from a local folder containing .ant files.
@@ -48,6 +52,7 @@ def add_many(path, oscillator, massConserved, num_nodes=None):
     mm.collection.insert_many(modelList)
     print(f"Successfully added {len(modelList)} models to database")
 
+
 def findMisProcessed(antimony):
     lines = antimony.splitlines()
     speciesList = []
@@ -78,6 +83,7 @@ def deleteBadModels(query, writeOut=False, destinationPath=None):
                 f.close()
     print(f'Deleted {count} of {processed} models :(')
 
+
 def delete_by_path(path):
     '''
     Delete models from the database that match models in a local folder.
@@ -101,6 +107,7 @@ def delete_by_path(path):
             count += 1
     print(f"Successfully deleted {count} models from the database.")
 
+
 def add_ant_extension(path):
     os.chdir(path)
     count = 0
@@ -108,6 +115,7 @@ def add_ant_extension(path):
         os.rename(filename, filename[:-4])
         count += 1
     print(f'Successfully added .ant extension to {count} files')
+
 
 def load_lines(path):
     '''
@@ -136,6 +144,7 @@ def load_antimony(path):
         ant = f.read()
         f.close()
     return ant
+
 
 def delete_by_query(query, yesNo=True):
     '''

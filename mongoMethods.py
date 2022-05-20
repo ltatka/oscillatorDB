@@ -21,6 +21,10 @@ cur = collection.find({})
 CURRENT OPTIONS FOR modelType field:
 "oscillator"
 "random" - refers to random models used for controls
+
+You can update this list here or use the add_model_type function. 
+NOTE that this list is NOT attached to the database, so unless you push these changes, the database won't 'know'
+about this list and what types of models it has.
 '''
 model_types = {"oscillator", "random"}
 
@@ -31,12 +35,14 @@ def print_model_types():
     for model in model_types:
         print(model)
 
+
 def get_model_types():
     '''
     Get the current options for the modelType field
     :return: A set of possible model types (strings)
     '''
     return model_types
+
 
 def add_model_type(new_type):
     '''
@@ -45,6 +51,7 @@ def add_model_type(new_type):
     :return: None
     '''
     model_types.add(new_type)
+
 
 def generate_ID(n=19):
     '''
@@ -58,6 +65,7 @@ def generate_ID(n=19):
         ID = ''.join(["{}".format(randint(0, 9)) for num in range(0, n)])
         _, length = query_database({"ID": ID}, returnLength=True, printSize=False)
     return ID
+
 
 def is_valid_ant_string(antString):
     '''
@@ -81,6 +89,7 @@ def is_valid_ant_string(antString):
     if k_tally != reaction_tally:
         raise Exception("Invalid antimony string: the number of reactions and rate constants is not equal.\n")
     return True
+
 
 def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None, addReactionProbabilites=None,
               initialProbabilites=None, autocatalysisPresent=None, degredationPresent=None):
@@ -131,12 +140,6 @@ def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None,
         print("Something went wrong. Unable to add model.")
 
 
-
-
-
-
-
-
 def print_entries(cursor=cur, n=None):
     '''
     Prints entries in the database
@@ -157,15 +160,10 @@ def print_entries(cursor=cur, n=None):
                 break
 
 
-
-
-
 def get_random_oscillator():
     result = query_database({'oscillator': True, 'num_nodes': 3})
     count = collection.count_documents({'oscillator': True, 'num_nodes': 3})
     return result[randrange(count)]
-
-
 
 
 def get_nReactions(ant):

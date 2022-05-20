@@ -68,7 +68,7 @@ Note that the new model will be added to the databse with the new type. All user
 The antimony string must be formatted as follows:
 ```
 antimony_string = '''
-var S0                        # Species must be declared first using 'var' or 'ext
+var S0                        # Species must be declared first using 'var' or 'ext' (getting the correct num_nodes count depends on this!)
 var S1
 var S2
 S1 -> S1+S0; k0*S1      

@@ -34,8 +34,6 @@ def get_model_types(printTypes=True):
     :param printTypes: optional, boolean, prints the types if True
     :return: A set of possible model types (strings)
     '''
-    for model in model_types:
-        print(model)
     return model_types
 
 

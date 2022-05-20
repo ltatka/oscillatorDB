@@ -1,5 +1,28 @@
 # oscillatorDB
 
+## Table of Contents
+- [oscillatorDB](#oscillatordb)
+  * [Recent Updates (2022-05-20)](#recent-updates--2022-05-20-)
+    + [The "modelType" field](#the--modeltype--field)
+      - [Example:](#example-)
+    + [New add_model method](#new-add-model-method)
+  * [Set Up](#set-up)
+  * [Database Schema](#database-schema)
+  * [Queries](#queries)
+    + [Simple Queries](#simple-queries)
+    + [General Queries - most likely this is what you want](#general-queries---most-likely-this-is-what-you-want)
+      - [Get IDs](#get-ids)
+      - [Get antimony strings](#get-antimony-strings)
+      - [Get SBML files](#get-sbml-files)
+    + [Custom Queries](#custom-queries)
+  * [Adding to Database](#adding-to-database)
+    + [Adding a Single Model](#adding-a-single-model)
+    + [Adding en Masse (USE CAUTION)](#adding-en-masse--use-caution-)
+        * [EXAMPLE:](#example-)
+
+
+
+
 ## Recent Updates (2022-05-20)
 * All unused or redundant fields have been removed. 
 * The field "oscillator" has been removed. To find oscillators, use "modelType": "oscillator"

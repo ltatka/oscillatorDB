@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import warnings
 from random import randrange
 import tellurium as te
+from random import randint
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -45,6 +46,96 @@ def add_model_type(new_type):
     '''
     model_types.add(new_type)
 
+def generate_ID(n=19):
+    '''
+    Generate a random ID number that is not already in the database
+    :param n: the number of digits in the ID
+    :return: the ID number (string)
+    '''
+    ID = ''.join(["{}".format(randint(0, 9)) for num in range(0, 19)])
+    _, length = query_database({"ID": ID}, returnLength=True, printSize=False)
+    while length > 0:
+        ID = ''.join(["{}".format(randint(0, 9)) for num in range(0, n)])
+        _, length = query_database({"ID": ID}, returnLength=True, printSize=False)
+    return ID
+
+def is_valid_ant_string(antString):
+    '''
+    A basic test to assess if an antimony string is in the correct format for future processing
+    :param antString: (str) antimony string to test
+    :return: boolean, True if valid
+    '''
+    if antString.startswith('#'):
+        antString = antString.split('\n')[1:]
+    else:
+        antString = antString.split('\n')
+    if not (antString[0].startswith('var') or antString[0].startswith('ext')):
+        raise Exception("Invalid antimony string: Species must be defined first using 'var' or 'ext'\n")
+    k_tally = 0
+    reaction_tally = 0
+    for line in antString:
+        if line.startswith("k"):
+            k_tally += 1
+        elif not (line.startswith("k") or line.startswith('var') or line.startswith('ext')):
+            reaction_tally += 1
+    if k_tally != reaction_tally:
+        raise Exception("Invalid antimony string: the number of reactions and rate constants is not equal.\n")
+    return True
+
+def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None, addReactionProbabilites=None,
+              initialProbabilites=None, autocatalysisPresent=None, degredationPresent=None):
+    '''
+    Add a single new model to the database
+    :param antString: (str) antimony string to be added
+    :param modelType: (str) what type of model it is, eg. "oscillator"
+    Optional args:
+    :param ID: (str) model's ID
+    :param num_nodes: (int) the number of species
+    :param num_reactions: (int) the number of reactions
+    :param addReactionProbabilites: int list, the probability of adding each reaction type:
+        uni-uni, uni-bi, bi-uni, bi-bi
+    :param initialProbabilites: int list, the initial probability of adding each reaction type when generating a
+        random network: uni-uni, uni-bi, bi-uni, bi-bi
+    :param autocatalysisPresent: boolean, True if there is an autocatalytic reaction
+    :param degredationPresent: boolean, True if there is a degradation reaction
+    :param analyzeReactions:
+    '''
+    if not is_valid_ant_string(antString):
+        return
+    if modelType not in model_types:
+        raise Exception(f"'{modelType}' is not a valid modelType.\nDouble check spelling or add a new modelType with "
+                        f"'add_model_type(new_type)'\n")
+    _, length = query_database({"ID": ID}, returnLength=True, printSize=False)
+    if length > 0: # Check if the ID is a duplicate
+        raise Exception(f"Unable to add model. A model with the ID {ID} already exists.\n")
+    if not ID:
+        ID = generate_ID()
+    if not num_nodes:
+        num_nodes = get_nNodes(antString)
+    if not num_reactions:
+        num_reactions = get_nReactions(antString)
+    modelDict = {'ID': ID,
+                 'modelType': modelType,
+                 'num_nodes': num_nodes,
+                 'num_reactions': num_reactions,
+                 'model': antString,
+                 'addReactionProbabilities': addReactionProbabilites,
+                 'initialProbabilities': initialProbabilites,
+                 'Autocatalysis Present': autocatalysisPresent,
+                 'Degredation Present': degredationPresent
+                 }
+    try:
+        collection.insert_one(modelDict)
+        print("Model successfully added")
+    except:
+        print("Something went wrong. Unable to add model.")
+
+
+
+
+
+
+
 
 def print_entries(cursor=cur, n=None):
     '''
@@ -66,12 +157,6 @@ def print_entries(cursor=cur, n=None):
                 break
 
 
-def get_connection():
-    '''
-    Connect to the mongoDB
-    :return: a MongoClient object connected to the database
-    '''
-    return MongoClient("mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net")
 
 
 
@@ -112,14 +197,17 @@ def get_nNodes(ant):
     return nNodes
 
 
-def query_database(query, returnLength=False):
+def query_database(query, returnLength=False, printSize=True):
     '''
-    Retrieve all entries that match the query
+    Retrieve all entries that match the query.
     :param query: A dictionary of the desired model traits
+    returnLength: boolean, also returns the number of results if True
+    printSize: boolean, prints number of results if True
     :return: A cursor object containing the dictionaries for all matching models
     '''
     length = collection.count_documents(query)
-    print(f'Found {length} matching entries.')
+    if printSize:
+        print(f'Found {length} matching entries.')
     if returnLength:
         return collection.find(query), length
     else:
@@ -191,29 +279,6 @@ def yes_or_no(question):
             print('Please answer y or n.')
 
 
-
-
-
-
-
-def delete_by_query(query, yesNo=True):
-    '''
-    USE WITH CAUTION
-    Delete models that match the query from the database
-    :param query: A dictionary with the target traits of models to be deleted.
-    :return: None
-    '''
-    if query == {}:
-        print('Deleting the entire database is not allowed.')
-        return None
-    if yesNo:
-        proceed = yes_or_no(f"Are you sure you want to delete all models that math the query {str(query)}?")
-        if proceed:
-            collection.delete_many(query)
-            print(f"Successfully deleted models matching the query {str(query)}")
-    else:
-        collection.delete_many(query)
-
 def get_sbml(query, sbml_path):
     id_list = get_ids(query)
     if not os.path.exists(sbml_path) or not os.path.isdir(sbml_path):
@@ -244,6 +309,12 @@ def print_random_oscillator():
     print(result[i]["model"])
 
 
+def get_connection():
+    '''
+    Connect to the mongoDB
+    :return: a MongoClient object connected to the database
+    '''
+    return MongoClient("mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net")
 
 get_connection()
 

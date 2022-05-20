@@ -136,3 +136,21 @@ def load_antimony(path):
         ant = f.read()
         f.close()
     return ant
+
+def delete_by_query(query, yesNo=True):
+    '''
+    USE WITH CAUTION
+    Delete models that match the query from the database
+    :param query: A dictionary with the target traits of models to be deleted.
+    :return: None
+    '''
+    if query == {}:
+        print('Deleting the entire database is not allowed.')
+        return None
+    if yesNo:
+        proceed = mm.yes_or_no(f"Are you sure you want to delete all models that math the query {str(query)}?")
+        if proceed:
+            mm.collection.delete_many(query)
+            print(f"Successfully deleted models matching the query {str(query)}")
+    else:
+        mm.collection.delete_many(query)

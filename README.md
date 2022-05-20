@@ -11,7 +11,26 @@
     * To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
 * There is a new method to add a single model called ```add_model(antString, modelType)```
     * Arguments: antString - The antimony string for the model to be added
-                 modelType - (string) model type from list of current model ty  
+                 modelType - (string) model type from list of current model types
+    * Optional args: 
+       ID: (str) model's ID, populated automatically if left blank
+       num_nodes: (int) the number of species, populated automatically if left blank
+       num_reactions: (int) the number of reactions, populated automatically if left blank
+       addReactionProbabilites: int list, the probability of adding each reaction type:
+           uni-uni, uni-bi, bi-uni, bi-bi
+       initialProbabilites: int list, the initial probability of adding each reaction type when generating a
+           random network: uni-uni, uni-bi, bi-uni, bi-bi
+       autocatalysisPresent: boolean, True if there is an autocatalytic reaction
+       degredationPresent: boolean, True if there is a degradation reaction
+       
+### Example: 
+Input:
+```
+import mongoMethods as mm
+mm.get_model_types()
+'''
+Output:
+```
 
 ## Set Up
 Clone this repository:

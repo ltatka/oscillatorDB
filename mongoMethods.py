@@ -109,7 +109,7 @@ def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None,
         return
     if modelType not in model_types:
         raise Exception(f"'{modelType}' is not a valid modelType.\nDouble check spelling or add a new modelType with "
-                        f"'add_model_type(new_type)'\n")
+                        f"'add_model_type('{modelType}')'\n")
     _, length = query_database({"ID": ID}, returnLength=True, printSize=False)
     if length > 0: # Check if the ID is a duplicate
         raise Exception(f"Unable to add model. A model with the ID {ID} already exists.\n")

@@ -28,25 +28,23 @@ about this list and what types of models it has.
 '''
 model_types = {"oscillator", "random"}
 
-def print_model_types():
+def get_model_types(printTypes=True):
     '''
-    Print the current options for the modelType field
+    Get the current options for the modelType field
+    :param printTypes: optional, boolean, prints the types if True
+    :return: A set of possible model types (strings)
     '''
     for model in model_types:
         print(model)
-
-
-def get_model_types():
-    '''
-    Get the current options for the modelType field
-    :return: A set of possible model types (strings)
-    '''
     return model_types
 
 
 def add_model_type(new_type):
     '''
-    Add a new option for the modelType field
+    Add a new option for the modelType field.
+    NOTE that these changes will only affect your local version of this software unless you push the changes
+    or submit a pull request. That means that your copy of oscillatorDB will know about the new model type,
+    but the database and other users will not
     :param new_type: string
     :return: None
     '''

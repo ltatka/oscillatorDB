@@ -28,10 +28,21 @@ Input:
 ```
 import mongoMethods as mm
 mm.get_model_types()
-'''
+```
 Output:
 ```
-
+{'oscillator', 'random'}
+```
+Adding a model that is not one of these two types will throw an error:
+Input:
+```
+mm.add_model(<antString>, "bistable")
+```
+Output:
+```
+Exception: 'bistable' is not a valid modelType.
+Double check spelling or add a new modelType with add_model_type
+```
 ## Set Up
 Clone this repository:
 ```git clone https://github.com/really-lilly/oscillatorDB.git```

@@ -112,16 +112,23 @@ conda activate oscillatorDB
 <b> Note to self: </b> DO NOT INSTALL bson into this environment. 
 
 
-## Database Description
+## Database Schema
+Also available via ```print_schema()```
 
 The data base stores:
 * ID: model's ID number (str)
 * num_nodes: number of species (int)
 * num_reactions: number of reactions (int)
 * model: antimony string for the model
-* oscillator: If the model oscillates or not (boolean). True if does, False if it does not. 
-    * Models are filtered so none go to infinity
-* mass_conserved: True if there are no reactions that violate mass conservation (eg. A + B -> A). False otherwise
+* modelType: eg. "oscillator" or "random" (str)
+* combinedReactions: identical reactions that were fused in post-processing (list of strings)
+* deletedReactions: reactions that were not needed for oscillation and removed (list of strings)
+* reactionCounts: Tally for different reaction types: Uni-Uni, Uni-Bi, Bi-Uni, Bi-Bi, Degradation, Autocatalysis, Total (dict)
+* Autocatalysis Present: True if an autocatalytic reaction is present (boolean)
+* Degradation Present: True if a degradation reaction is present (boolean)
+* addReactionProbabilities: The probability of adding each reaction type <b>during evolution</b>: uni-uni, uni-bi, bi-uni, bi-bi (eg. [0.25, 0.25, 0.25,0.25]) (list of floats)
+* initialProbabilities: The probability of adding each reaction type <b>during the initial random generation</b>, uni-uni, uni-bi, bi-uni, bi-bi (eg. [0.25, 0.25, 0.25,0.25]) (list of floats)
+
 
 
 ## Queries
@@ -189,23 +196,53 @@ for model in models:
     print(model['num_reactions'])
 ```
 
-The collection can also be directly queried after directly connecting to the database collection
+## Adding to Database 
+### Adding a Single Model
+(copied from recent updates)
+* ```add_model(antString, modelType)```
+* Arguments: antString - The antimony string for the model to be added
+                 modelType - (string) model type from list of current model types
+    * Optional args: 
+       ID: (str) model's ID, populated automatically if left blank
+       num_nodes: (int) the number of species, populated automatically if left blank
+       num_reactions: (int) the number of reactions, populated automatically if left blank
+       addReactionProbabilites: int list, the probability of adding each reaction type:
+           uni-uni, uni-bi, bi-uni, bi-bi
+       initialProbabilites: int list, the initial probability of adding each reaction type when generating a
+           random network: uni-uni, uni-bi, bi-uni, bi-bi
+       autocatalysisPresent: boolean, True if there is an autocatalytic reaction
+       degredationPresent: boolean, True if there is a degradation reaction
+
+The antimony string must be formatted as follows:
 ```
-import mongoMethods as mm
-
-# Connect to the database collection
-collection = mm.collection
-
-# Get oscillators with 3 nodes and 5 reactions
-query = { "num_nodes" : 3, "num_reactions" : 5, "oscillator" : True }
-entries = collection.find(query)
-
-# Get the IDs of models that match the query
-for entry in entries:
-    print(entry['ID'])
+antimony_string = '''
+var S0                        # Species must be declared first using 'var' or 'ext' (getting the correct num_nodes count depends on this!)
+var S1
+var S2
+S1 -> S1+S0; k0*S1      
+S2 + S0 -> S0; k1*S2*S0
+S2 -> S2+S1; k2*S2
+S0 -> S1; k3*S0
+S1 -> S2; k4*S1
+S2 -> S2+S2; k5*S2
+k0 = 2.58                     # Rate constants must start with "k"
+k1 = 25.10                    # The number of rate constants must equal the number of reactions
+k2 = 5.69
+k3 = 12.40
+k4 = 28.62
+k5 = 63.57
+S0 = 1.0
+S1 = 5.0
+S2 = 9.0'''
 ```
+Adding the new model:
+```
+mm.add_model(antimony_string, "oscillator", num_nodes=3, num_reactions=6, autocatalysis=True)
+```
+If left blank, the fields ID, num_nodes, and num_reactions will automatically be populated. Any other optional arguments that are left blank will be None.
 
-## Adding to Database
+### Adding en Masse (USE CAUTION)
+<b>It's probably a good idea to email me before you do this: ltatka@uw.edu</b>
 
 New models can be added en masse provided that all antimony files are stored in a single folder. You will also need to provide the oscillation status (True, False). The number of nodes/species will automatically be counted provided that the antimony file starts with listing the species as shown below. 
 '''
@@ -222,38 +259,12 @@ Add oscillating networks from the folder ant_folder
 ```
 import mongoMethods as mm
 
-
 path = "/home/user/ant_folder"
 
 # True indicates oscillating model
 mm.add_many(path, True, num_nodes=3)   #add_many(path, oscillator, massConserved, num_nodes=None)
 ```
 
-It may be necessary to delete models from the database if they've been erroneously added. **Be catious**, deleting models is permanent and effects the entire database.
 
-##### EXAMPLE:
-Let's say that in the previous example, we added antimony models to the database from the folder ant_folders, but they were erroneously added as oscillators when they are not. We can delete all the models that are stored in the local folder from the database and then re-add them with the correct oscillation status.
-```
-import mongoMethods as mm
 
-connection = mm.get_connection()
-path = "C:\\Users\\user\\ant_folder"
-
-# Remove the models
-mm.delete_by_path(path)
-
-# Re-add the models with the correct oscillator status
-mm.add_many(path, False)
-```
-Models can also be deleted by query. This is useful if you want to delete a specific model. For example, the model 12345 can be deleted by
-```mm.delete_by_query({ 'ID' : '12345' })```
-Please be careful when deleting by query. If your query is not specific enough, you may end up permanently deleting other models from the database as well.
-
-## What's in the database
-Last updated 2021-07-15
-
-* 10 node oscillators
-* 10 node controls (non-oscillators)
-* 3 node oscillators
-* 3 node controls
 

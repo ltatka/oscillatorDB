@@ -18,7 +18,7 @@
   * [Adding to Database](#adding-to-database)
     + [Adding a Single Model](#adding-a-single-model)
     + [Adding en Masse (USE CAUTION)](#adding-en-masse--use-caution-)
-        * [Exampel - Adding Models en Masse:](#exampel---adding-models-en-masse-)
+        * [Example - Adding Models en Masse:](#exampel---adding-models-en-masse-)
 
 
 
@@ -276,7 +276,7 @@ This will also work if the first line is a comment. If your antimony file does n
 
 **NOTE: There is currently no safeguard to prevent adding duplicate models to the database. Running the same add_many command twice will duplicate the models previously added.**
 
-##### Exampel - Adding Models en Masse: 
+##### Example - Adding Models en Masse: 
 Add oscillating networks from the folder ant_folder
 ```
 import mongoMethods as mm

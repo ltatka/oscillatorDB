@@ -37,17 +37,6 @@ def get_model_types(printTypes=True):
     return model_types
 
 
-def add_model_type(new_type):
-    '''
-    Add a new option for the modelType field.
-    NOTE that these changes will only affect your local version of this software unless you push the changes
-    or submit a pull request. That means that your copy of oscillatorDB will know about the new model type,
-    but the database and other users will not
-    :param new_type: string
-    :return: None
-    '''
-    model_types.add(new_type)
-
 
 def generate_ID(n=19):
     '''
@@ -108,8 +97,7 @@ def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None,
     if not is_valid_ant_string(antString):
         return
     if modelType not in model_types:
-        raise Exception(f"'{modelType}' is not a valid modelType.\nDouble check spelling or add a new modelType with "
-                        f"'add_model_type('{modelType}')'\n")
+        raise Exception(f"'{modelType}' is not a valid modelType.\nDouble check spelling or add a new modelType\n")
     _, length = query_database({"ID": ID}, returnLength=True, printSize=False)
     if length > 0: # Check if the ID is a duplicate
         raise Exception(f"Unable to add model. A model with the ID {ID} already exists.\n")

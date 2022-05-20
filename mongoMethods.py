@@ -16,6 +16,35 @@ db = client.networks
 collection = db['networks']
 cur = collection.find({})
 
+'''
+CURRENT OPTIONS FOR modelType field:
+"oscillator"
+"random" - refers to random models used for controls
+'''
+model_types = {"oscillator", "random"}
+
+def print_model_types():
+    '''
+    Print the current options for the modelType field
+    '''
+    for model in model_types:
+        print(model)
+
+def get_model_types():
+    '''
+    Get the current options for the modelType field
+    :return: A set of possible model types (strings)
+    '''
+    return model_types
+
+def add_model_type(new_type):
+    '''
+    Add a new option for the modelType field
+    :param new_type: string
+    :return: None
+    '''
+    model_types.add(new_type)
+
 
 def print_entries(cursor=cur, n=None):
     '''
@@ -45,46 +74,13 @@ def get_connection():
     return MongoClient("mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net")
 
 
-def get_collection_size(onlyOscillators=True):
-    if onlyOscillators:
-        results = collection.find({'oscillator': True, 'num_nodes': 3})
-        return results.count()
-    else:
-        return collection.count()
-
 
 def get_random_oscillator():
     result = query_database({'oscillator': True, 'num_nodes': 3})
     count = collection.count_documents({'oscillator': True, 'num_nodes': 3})
     return result[randrange(count)]
 
-def load_lines(path):
-    '''
-    Load an antimony model from a local machine split into lines
-    :param path: path to the .ant file
-    :return: Returns the antimony test as a list of strings. Omits the first line if it is a comment.
-    '''
-    with open(path, "r") as f:
-        ant = f.read()
-        f.close()
-    lines = ant.split('\n')
-    # First line is comment for fitness, ignore
-    if lines[0].startswith('#'):
-        lines = lines[1:]
-    return lines
 
-
-def load_antimony(path):
-    '''
-    Load an antimony model from a local machine split into lines
-    :param path: path to the .ant file
-    :return: a single antimony string for the model. Includes all lines including comments.
-    '''
-    # THIS WILL INCLUDE THE FIRST COMMENTED LINE!
-    with open(path, "r") as f:
-        ant = f.read()
-        f.close()
-    return ant
 
 
 def get_nReactions(ant):
@@ -145,9 +141,7 @@ def get_ids(query):
         return None
     return result
 
-def update_model(query, update):
-    newValue = {"$set" : update}
-    collection.update_one(query, newValue)
+
 
 
 def get_model_by_id(id):
@@ -197,60 +191,14 @@ def yes_or_no(question):
             print('Please answer y or n.')
 
 
-def add_many(path, oscillator, massConserved, num_nodes=None):
-    '''
-    Add several antimony models to the database from a local folder containing .ant files.
-    :param path: Path to the folder where the antimony models are located.
-    :param oscillator: Oscillation status. True for oscillator, False for non oscillator (booleans), or 'damped' (str)
-    :return: None
-    '''
-    if not os.path.exists(path):
-        raise ValueError("Invalid path")
-    modelList = []
-    os.chdir(path)
-    for filename in os.listdir(path):
-        if not filename.endswith('.ant') or os.path.isdir(filename):
-            continue
-        ant_lines = load_lines(filename)
-        nReactions = get_nReactions(ant_lines)
-        if not num_nodes:
-            nNodes = get_nNodes(ant_lines)
-        else:
-            nNodes = num_nodes
-        ant = load_antimony(filename)
-
-        if filename.startswith('FAIL_Model_'):
-            ID = filename[11:-4]
-        elif filename.startswith('Model_'):
-            ID = filename[6:-4]
-        elif filename.endswith('.ant'):
-            ID = filename[:-4]
-        else:
-            ID = filename
-        if not (oscillator == True or oscillator == False or oscillator == 'damped'):
-            raise ValueError("Oscillator argument must be True, False, or 'damped'")
-        modelDict = {'ID': ID,
-                     'num_nodes': nNodes,
-                     'num_reactions': nReactions,
-                     'model': ant,
-                     'oscillator': oscillator,
-                     'mass_conserved' : massConserved}
-        modelList.append(modelDict)
-    collection.insert_many(modelList)
-    print(f"Successfully added {len(modelList)} models to database")
 
 
-def add_ant_extension(path):
-    os.chdir(path)
-    count = 0
-    for filename in os.listdir(path):
-        os.rename(filename, filename[:-4])
-        count += 1
-    print(f'Successfully added .ant extension to {count} files')
+
 
 
 def delete_by_query(query, yesNo=True):
     '''
+    USE WITH CAUTION
     Delete models that match the query from the database
     :param query: A dictionary with the target traits of models to be deleted.
     :return: None
@@ -265,32 +213,6 @@ def delete_by_query(query, yesNo=True):
             print(f"Successfully deleted models matching the query {str(query)}")
     else:
         collection.delete_many(query)
-
-
-
-def delete_by_path(path):
-    '''
-    Delete models from the database that match models in a local folder.
-    This is useful if models from a local folder were incorrectly or inadvertently added to the database.
-    :param path: Path to local folder where the .ant files are located.
-    :return: None
-    '''
-    if not os.path.exists(path):
-        raise ValueError('Invalid path.')
-    os.chdir(path)
-    count = 0
-    for filename in os.listdir(path):
-        if filename.endswith('.ant'):
-            if filename.startswith('FAIL_Model_'):
-                ID = filename[11:-4]
-            elif filename.startswith('Model_'):
-                ID = filename[6:-4]
-            else:
-                ID = filename[-4]
-            collection.delete_one({'ID': ID})
-            count += 1
-    print(f"Successfully deleted {count} models from the database.")
-
 
 def get_sbml(query, sbml_path):
     id_list = get_ids(query)
@@ -308,35 +230,7 @@ def get_sbml(query, sbml_path):
             continue
     print(f"Exported {count} of {total} models to {sbml_path}")
 
-def findMisProcessed(antimony):
-    lines = antimony.splitlines()
-    speciesList = []
-    for line in lines:
-        if line.startswith('var') or line.startswith('ext'):
-            if line not in speciesList:
-                speciesList.append(line)
-            else:
-                return True, antimony
-    return False, None
 
-
-def deleteBadModels(query, writeOut=False, destinationPath=None):
-    results = mm.query_database(query)
-    processed = 0
-    count = 0
-    if destinationPath:
-        os.chdir(destinationPath)
-    for model in results:
-        isMisProcessed, antimony = findMisProcessed(model['model'])
-        if isMisProcessed:
-            count += 1
-            mm.delete_by_query({'ID': model['ID']}, yesNo=False)
-        processed += 1
-        if writeOut:
-            with open(model['ID']+'.ant', "w") as f:
-                f.write(model['model'])
-                f.close()
-    print(f'Deleted {count} of {processed} models :(')
 
 def print_attributes():
     # Print the attributes stored for each model

@@ -1,5 +1,18 @@
 # oscillatorDB
 
+## Recent Updates
+* All unused or redundant fields have been removed. 
+* The field "oscillator" has been removed. To find oscillators, use "modelType": "oscillator"
+* There is now a defined set of possible model types for the field modelType. Currently these are "oscillator" and "random"
+    * You will not be able to add a model unless it has a modelType tag of one of these two types
+    * If you want to add an additional type to the list:
+        ```add_model_type(new_type)``` with new_type being a string
+    * This will update your <b>local</b> copy of oscillatorDB, but the modelType list is not tied to the database. Unless you push changes or do a pull request, neither <b>the databse</b> nor users will 'know' about the new model type (but your model WILL be added).
+    * To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
+* There is a new method to add a single model called ```add_model(antString, modelType)```
+    * Arguments: antString - The antimony string for the model to be added
+                 modelType - (string) model type from list of current model ty  
+
 ## Set Up
 Clone this repository:
 ```git clone https://github.com/really-lilly/oscillatorDB.git```
@@ -14,9 +27,7 @@ These can be installed via pip or conda. Alternatively, environment.yml is a con
 conda env create -f environment.yml
 conda activate oscillatorDB
  ```
-<b> Note to self: </b> DO NOT INSTALL bson into this environment. It will break everything and you'll waste an entire day trying to fix it and then just end up re-cloning the repo. Trust me, I know. Don't think it will be a good idea to back up the database and google how to do it. Don't implent the accepted answer on StackOverflow. Don't mess with the environment. Do not do what I have done.
-
-You think that doesn't sound that bad? Well you also have to delete the environment and then rebuild it. And then reset your python interpreter to the new environment. Just don't do that. 
+<b> Note to self: </b> DO NOT INSTALL bson into this environment. 
 
 
 ## Database Description

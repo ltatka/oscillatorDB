@@ -280,11 +280,14 @@ def get_sbml(query, sbml_path):
 
 
 
-def print_schema():
+def print_schema(model=None):
     # Print the schema for the database
     # as you can see, this method is a bit flawed in that it assumes this sample_model will have the maximum
     # number of schema
-    sample_model = collection.find_one({"num_nodes": 3})
+    if model:
+        sample_model = collection.find_one({"ID": model["ID"]})
+    else:
+        sample_model = collection.find_one({"num_nodes": 3})
     for key in sample_model.keys():
         print(key)
 

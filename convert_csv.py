@@ -4,8 +4,7 @@ with open("/home/hellsbells/projects/oscillator_backup/networks.json") as json_f
     data = json.load(json_file)
 
 
-model = data[0]
-
+model = data[3358]
 
 csv_file = open("/home/hellsbells/projects/oscillator_backup/networks.csv", "w")
 
@@ -16,7 +15,15 @@ csv_writer.writerow(header)
 for i in range(len(data)):
     model = data[i]
 
-    row = [model["_id"], model["ID"], model["num_nodes"], model["num_reactions"], model["model"], model["modelType"]]
+    row = []
+
+    for key in header:
+        try:
+            entry = model[key]
+        except:
+            entry = None
+        row.append(entry)
+
     csv_writer.writerow(row)
 
 csv_file.close()

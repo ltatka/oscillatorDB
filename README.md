@@ -2,7 +2,7 @@
 
 ## Table of Contents
 - [oscillatorDB](#oscillatordb)
-  * [Recent Updates (2022-05-20)](#recent-updates--2022-05-27-)
+  * [Recent Updates (2022-05-27)](#recent-updates--2022-05-27-)
     + [The "modelType" field](#the--modeltype--field)
       - [Example - modelType Field:](#example---modeltype-field-)
     + [New add_model method](#new-add-model-method)

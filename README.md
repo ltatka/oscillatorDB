@@ -30,12 +30,7 @@
     
 
 ### The "modelType" field
-There is now a defined set of possible model types for the field modelType. Currently these are "oscillator" and "random"
-* You will not be able to add a model unless it has a modelType tag of one of these two types
-* If you want to add an additional type to the list, add it to the set in mongoMethods.py
-* This will update your <b>local</b> copy of oscillatorDB, but the modelType list is not tied to the database. Unless you push changes or do a pull request, neither <b>the databse</b> nor users will 'know' about the new model type (but your model WILL be added).
-* To see what model types are available: ```get_model_types``` -- if you added a new type without pushing the changes, it will show up here but that does NOT mean that database or other users have access to this new type.
-* It's helpful to put all known info into the optional arguments and leave as few blanks as possible, but in the future I will restructure stuff so you can analyze the reactions from here.
+There is now a defined set of possible model types for the field modelType. Currently these are "oscillator" and "random".
 
 #### Example - modelType Field: 
 <b>Get a list of the current model types:</b>
@@ -69,7 +64,7 @@ mm.add_model_type('bistable')
    * initialProbabilites: int list, the initial probability of adding each reaction type when generating a
        random network: uni-uni, uni-bi, bi-uni, bi-bi
    * autocatalysisPresent: boolean, True if there is an autocatalytic reaction
-   * degredationPresent: boolean, True if there is a degradation reaction
+   * degradationPresent: boolean, True if there is a degradation reaction
 
 The antimony string must be formatted as follows:
 ```
@@ -99,6 +94,7 @@ mm.add_model(antimony_string, "oscillator", num_nodes=3, num_reactions=6, autoca
 ```
 If left blank, the fields ID, num_nodes, and num_reactions will automatically be populated. Any other optional arguments that are left blank will be None.
 
+It's helpful to put all known info into the optional arguments and leave as few blanks as possible, but in the future I will restructure stuff so you can analyze the reactions from here.
 
 ## Set Up
 Clone this repository:
@@ -216,7 +212,7 @@ for model in models:
  * initialProbabilites: int list, the initial probability of adding each reaction type when generating a
      random network: uni-uni, uni-bi, bi-uni, bi-bi
  * autocatalysisPresent: boolean, True if there is an autocatalytic reaction
- * degredationPresent: boolean, True if there is a degradation reaction
+ * degradationPresent: boolean, True if there is a degradation reaction
 
 The antimony string must be formatted as follows:
 ```
@@ -245,31 +241,3 @@ Adding the new model:
 mm.add_model(antimony_string, "oscillator", num_nodes=3, num_reactions=6, autocatalysis=True)
 ```
 If left blank, the fields ID, num_nodes, and num_reactions will automatically be populated. Any other optional arguments that are left blank will be None.
-
-### Adding en Masse (USE CAUTION)
-<b>It's probably a good idea to email me before you do this: ltatka@uw.edu</b>
-
-New models can be added en masse provided that all antimony files are stored in a single folder. You will also need to provide the oscillation status (True, False). The number of nodes/species will automatically be counted provided that the antimony file starts with listing the species as shown below. 
-'''
-var S0
-var S1
-#etc
-'''
-This will also work if the first line is a comment. If your antimony file does not have this information, the number of nodes can be manually provided with the option argument "num_nodes"
-
-**NOTE: There is currently no safeguard to prevent adding duplicate models to the database. Running the same add_many command twice will duplicate the models previously added.**
-
-##### Example - Adding Models en Masse: 
-Add oscillating networks from the folder ant_folder
-```
-import mongoMethods as mm
-
-path = "/home/user/ant_folder"
-
-# True indicates oscillating model
-mm.add_many(path, True, num_nodes=3)   #add_many(path, oscillator, massConserved, num_nodes=None)
-```
-
-
-
-

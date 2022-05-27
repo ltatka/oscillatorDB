@@ -2,7 +2,7 @@
 
 ## Table of Contents
 - [oscillatorDB](#oscillatordb)
-  * [Recent Updates (2022-05-20)](#recent-updates--2022-05-20-)
+  * [Recent Updates (2022-05-20)](#recent-updates--2022-05-27-)
     + [The "modelType" field](#the--modeltype--field)
       - [Example - modelType Field:](#example---modeltype-field-)
     + [New add_model method](#new-add-model-method)
@@ -22,7 +22,7 @@
 
 
 
-## Recent Updates (2022-05-20)
+## Recent Updates (2022-05-27)
 * All unused or redundant fields have been removed. 
 * The field "oscillator" has been removed. To find oscillators, use "modelType": "oscillator"
 * There is now a predifined list of possible modelTypes: "oscillator" or "random" (see below)
@@ -31,7 +31,6 @@
 
 ### The "modelType" field
 There is now a defined set of possible model types for the field modelType. Currently these are "oscillator" and "random"
-* These are stored as a set at the top of the mongoMethods.py file
 * You will not be able to add a model unless it has a modelType tag of one of these two types
 * If you want to add an additional type to the list, add it to the set in mongoMethods.py
 * This will update your <b>local</b> copy of oscillatorDB, but the modelType list is not tied to the database. Unless you push changes or do a pull request, neither <b>the databse</b> nor users will 'know' about the new model type (but your model WILL be added).
@@ -39,6 +38,8 @@ There is now a defined set of possible model types for the field modelType. Curr
 * It's helpful to put all known info into the optional arguments and leave as few blanks as possible, but in the future I will restructure stuff so you can analyze the reactions from here.
 
 #### Example - modelType Field: 
+<b>Get a list of the current model types:</b>
+
 Input:
 ```
 import mongoMethods as mm
@@ -46,32 +47,14 @@ mm.get_model_types()
 ```
 Output:
 ```
-{'oscillator', 'random'}
+['oscillator', 'random']
 ```
-Adding a model that is not one of these two types will throw an error:
+<b>Add a new model type:</b>
 
-Input:
 ```
-mm.add_model(<antString>, "bistable")
+mm.add_model_type('bistable')
 ```
-Output:
-```
-Exception: 'bistable' is not a valid modelType.
-Double check spelling or add a new modelType
-```
-First add the new model type to mongoMethods.py and then try again:
 
-Input:
-```
-mm.add_model(<antString>, "bistable")
-mm.get_model_types()
-```
-Output:
-```
-Model successfully added.
-{'oscillator', 'random', 'bistable'}
-```
-Note that the new model will be added to the databse with the new type. All users will be able to see the new model and its modelType tag in the database, but unless you push the changes to the mongoMethods.py file, no one else (including the database) will know about this new type.
 
 ### New add_model method
 * ```add_model(antString, modelType)```

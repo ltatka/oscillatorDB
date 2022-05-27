@@ -12,6 +12,7 @@ csv_writer = csv.writer(csv_file)
 header = model.keys()
 csv_writer.writerow(header)
 
+rownum = set()
 for i in range(len(data)):
     model = data[i]
 
@@ -24,8 +25,16 @@ for i in range(len(data)):
             entry = None
         row.append(entry)
 
+    rownum.add(len(row))
     csv_writer.writerow(row)
 
 csv_file.close()
 
 json_file.close()
+
+print(rownum)
+
+
+'''
+The problem is that somehow the deleted reactions column is getting separated by the ; and shifts data over 
+one column. But not all the time'''

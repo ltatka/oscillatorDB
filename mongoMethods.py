@@ -26,17 +26,31 @@ You can update this list here or use the add_model_type function.
 NOTE that this list is NOT attached to the database, so unless you push these changes, the database won't 'know'
 about this list and what types of models it has.
 '''
-model_types = {"oscillator", "random"}
 
-def get_model_types(printTypes=True):
+def get_model_types():
     '''
     Get the current options for the modelType field
     :param printTypes: optional, boolean, prints the types if True
-    :return: A set of possible model types (strings)
+    :return: A list of possible model types (strings)
     '''
-    return model_types
+    r = query_database({}, printSize=False)
+    return r[0]["allModelTypes"]
 
-
+def add_model_type(newType):
+    '''
+    Add a new option for the modelType field
+    :param newType: name of new type (string)
+    '''
+    allModelTypes = get_model_types()
+    if newType in allModelTypes:
+        print("This modelType already exists.")
+        return
+    allModelTypes.append(newType)
+    try:
+        collection.update_many({}, {'$set': {'allModelTypes': allModelTypes}})
+        print("Successfully updated ")
+    except:
+        print("An error occurred. Model type not added.")
 
 def generate_ID(n=19):
     '''
@@ -77,7 +91,7 @@ def is_valid_ant_string(antString):
 
 
 def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None, addReactionProbabilites=None,
-              initialProbabilites=None, autocatalysisPresent=None, degredationPresent=None):
+              initialProbabilites=None, autocatalysisPresent=None, degradationPresent=None):
     '''
     Add a single new model to the database
     :param antString: (str) antimony string to be added
@@ -91,7 +105,7 @@ def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None,
     :param initialProbabilites: int list, the initial probability of adding each reaction type when generating a
         random network: uni-uni, uni-bi, bi-uni, bi-bi
     :param autocatalysisPresent: boolean, True if there is an autocatalytic reaction
-    :param degredationPresent: boolean, True if there is a degradation reaction
+    :param degradationPresent: boolean, True if there is a degradation reaction
     :param analyzeReactions:
     '''
     if not is_valid_ant_string(antString):
@@ -116,7 +130,7 @@ def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None,
                  'addReactionProbabilities': addReactionProbabilites,
                  'initialProbabilities': initialProbabilites,
                  'Autocatalysis Present': autocatalysisPresent,
-                 'Degredation Present': degredationPresent
+                 'degradation Present': degradationPresent
                  }
     try:
         collection.insert_one(modelDict)

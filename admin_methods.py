@@ -75,7 +75,7 @@ def deleteBadModels(query, writeOut=False, destinationPath=None):
         isMisProcessed, antimony = findMisProcessed(model['model'])
         if isMisProcessed:
             count += 1
-            mm.delete_by_query({'ID': model['ID']}, yesNo=False)
+            delete_by_query({'ID': model['ID']}, yesNo=False)
         processed += 1
         if writeOut:
             with open(model['ID']+'.ant', "w") as f:

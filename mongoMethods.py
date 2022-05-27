@@ -110,7 +110,7 @@ def add_model(antString, modelType, ID=None, num_nodes=None, num_reactions=None,
     '''
     if not is_valid_ant_string(antString):
         return
-    if modelType not in model_types:
+    if modelType not in get_model_types():
         raise Exception(f"'{modelType}' is not a valid modelType.\nDouble check spelling or add a new modelType with "
                         f"'add_model_type('{modelType}')'\n")
     _, length = query_database({"ID": ID}, returnLength=True, printSize=False)

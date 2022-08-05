@@ -12,7 +12,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 astr = "mongodb+srv://data:VuRWQ@networks.wqx1t.mongodb.net"
 client = MongoClient(astr)
 database_names = client.list_database_names()
-db = client['networks']
+print(database_names)
+# db = client['networks']
 db = client.networks
 collection = db['networks']
 cur = collection.find({})
@@ -201,6 +202,8 @@ def query_database(query, returnLength=False, printSize=True):
     returnLength: boolean, also returns the number of results if True
     printSize: boolean, prints number of results if True
     :return: A cursor object containing the dictionaries for all matching models
+
+    To query nested dictionaries: x = db.networks.find({"reactionCounts.Total" : 6})
     '''
     length = collection.count_documents(query)
     if printSize:

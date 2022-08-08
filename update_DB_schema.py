@@ -10,68 +10,76 @@ db = client.networks
 collection = db['networks']
 cur = collection.find({})
 
-modelTypes = ["oscillator", "random"]
+# modelTypes = ["oscillator", "random"]
+#
+#
+#
+#
+# currentDB = mm.query_database({})
+#
+# models = []
+#
+# min_reactions = 1000
+# min_species = 1000
+# max_reactions = 0
+# max_species = 0
+#
+# for i, model in enumerate(currentDB):
+#     if i%100 == 0:
+#         print(i)
+#     entry = {
+#         "ID": model["ID"],
+#         "modelType": model["modelType"],
+#         "name": None,
+#         "isPublished": False,
+#         "author": None,
+#         "journal": None,
+#         "isEvolved": True,
+#         "antimonyModel": model['model'],
+#         "numBoundary": None,
+#         "numFloat": None,
+#         "numSpecies": model['num_nodes'],
+#         "numReactions": model['num_reactions'],
+#         "addReactionProbabilities": [0.25, 0.25, 0.25, 0.25],
+#         "initialReactionProbabilities": [0.1, 0.4, 0.4, 0.1],
+#     }
+#     try:
+#         entry["combinedReactions"] = model["combinedReactions"]
+#     except:
+#         entry["combinedReactions"] = None
+#
+#     try:
+#         entry['deletedReactions'] = model['deletedReactions']
+#     except:
+#         entry['deletedReactions'] = None
+#
+#     try:
+#         entry['reactionCounts'] = model['reactionCounts']
+#     except:
+#         entry['reactionCounts'] = None
+#
+#     if entry['numSpecies'] < min_species:
+#         min_species = entry['numSpecies']
+#     if entry['numReactions'] < min_reactions:
+#         min_reactions = entry['numReactions']
+#     if entry['numSpecies'] > max_species:
+#         max_species = entry['numSpecies']
+#     if entry['numReactions'] > max_reactions:
+#         max_reactions = entry['numReactions']
+#
+#     models.append(entry)
 
-for modelType in modelTypes:
+networkDB = client['meta_data']
+collection = db['meta_data']
 
-    currentDB = mm.query_database({"modelType": modelType})
+entry = {'totalModels': 10127,
+         'totalOscillators': 2065,
+         'totalRandom': 8062,
+         'modelTypes': ["oscillator", "random"]}
 
-    models = []
-
-    for i, model in enumerate(currentDB):
-        entry = {
-            "ID": model["ID"],
-            "modelType": model["modelType"],
-            "name": None,
-            "isPublished": False,
-            "publishingInfo": {"author": None,
-                               "Journal": None},
-            "isEvolved": False,
-
-            "antimonyModel": {"antString": model["model"],
-                              "numBoundary": None,
-                              "numFloat": None,
-                              "numSpecies": model["num_nodes"],
-                              "numReactions": model["num_reactions"]},
-        }
-        if modelType == "random":
-            entry["evolutionInfo"] = None
-        else:
-            try:
-                entry["evolutionInfo"]: {"combinedReactions": model["combinedReactions"],
-                                         "deletedReactions": model["deletedReactions"],
-                                         "addReactionProbabilities": model["addReactionProbabilities"],
-                                         "initialReactionProbabilities": model["initialProbabilities"],
-                                         "reactionCounts": None
-                                         }
-            except:
-                entry["evolutionInfo"]: {"addReactionProbabilities": [0.25, 0.25, 0.25, 0.25],
-                                         "initialReactionProbabilities": [0.1, 0.4, 0.4, 0.1],
-                                         "combinedReactions": None,
-                                         "deletedReactions": None,
-                                         "reactionCounts": None
-                                         }
-            try:
-                entry["evolutionInfo"]["reactionCounts"] = model["reactionCounts"]
-            except:
-                pass
-
-        models.append(entry)
-    networkDB = client['networkDB']
-    collection = db['networkDB']
-    if modelType == "oscillator":
-        entry_all = {
-            "dbName": "networkDB",
-            "allModelTypes": ["oscillator", "random"],
-            "models": models,
-            "totalModels": len(models)
-        }
-        collection.insert_one(entry_all)
-    else:
-        r = collection.find({})
-
-        oldLen = r[0]["totalModels"]
-        newVals = { "$set": {'models': r[0]['models']+models, "totalModels": len(models)+oldLen}}
-
-        collection.update_one({"dbName":"networkDB"}, newVals)
-
+collection.insert_one(entry)
+# for entry in models:
+#     collection.insert_one(entry)
+#
+#
+# r = collection.find({})

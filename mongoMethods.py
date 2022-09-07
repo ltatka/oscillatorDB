@@ -166,7 +166,7 @@ def print_entries(cursor=cur, n=None):
 
 
 def get_random_oscillator(printModel=False):
-    result = query_database({'modelType': 'oscillator', 'Species': 3})
+    result = query_database({'modelType': 'oscillator', 'numSpecies': 3})
     count = result.count()
     model = result[randrange(count)]
     if printModel:

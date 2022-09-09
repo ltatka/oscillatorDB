@@ -5,7 +5,7 @@ from random import randrange
 import tellurium as te
 from random import randint
 
-import mongoMethods
+
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -32,6 +32,24 @@ def print_metadata():
     print(f"Total Oscillators: {entry['totalOscillators']}")
     print(f"Total Random Models: {entry['totalRandom']}")
     print(f"Model Types: {entry['modelTypes']}")
+
+
+def update_metadata():
+    '''
+    Update metadata - but modelTypes will have to be updated manually. And I'll have to revisit this as metadata
+    fields change.
+    :return: None
+    '''
+    metadata = md.find({})
+    old_total = metadata[0]['totalModels']
+    total = collection.find({}).count()
+    oscillators = collection.find({"modelType": "oscillator"}).count()
+    random = collection.find({"modelType": "random"}).count()
+    newVal = {'totalModels': total,
+              'totalOscillators': oscillators,
+              'totalRandom': random}
+    md.update_one({'totalModels': old_total}, {'$set': newVal})
+    print('Successfully updated metadata')
 
 
 def query_metadata(query):

@@ -59,6 +59,7 @@ def query_metadata(query):
     :return: pymongo cursor
     '''
     return md.find(query)
+
 def get_model_types():
     '''
     Get the current options for the modelType field
@@ -208,23 +209,31 @@ def get_nSpecies(ant):
     return nNodes
 
 
-def query_database(query, returnLength=False, printSize=True):
+def query_database(query, returnLength=False, printSize=True, limit=None):
     '''
     Retrieve all entries that match the query.
     :param query: A dictionary of the desired model traits
     returnLength: boolean, also returns the number of results if True
     printSize: boolean, prints number of results if True
+    :optional args:
+        returnLength (bool): default False. if True, also returns the number of matches (int)
+        printSize (bool): default True, if True, prints the number of matching entries
+        limit (int): if given, only returns the first n entries
     :return: A cursor object containing the dictionaries for all matching models
-
-    To query nested dictionaries: x = db.networks.find({"reactionCounts.Total" : 6})
     '''
     length = collection.count_documents(query)
     if printSize:
         print(f'Found {length} matching entries.')
     if returnLength:
-        return collection.find(query), length
+        if limit:
+            return collection.find(query).limit(limit), length
+        else:
+            return collection.find(query), length
     else:
-        return collection.find(query)
+        if limit:
+            return collection.find(query).limit(limit)
+        else:
+            return collection.find(query)
 
 
 def get_ids(query):

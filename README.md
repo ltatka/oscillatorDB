@@ -57,8 +57,8 @@ mm.add_model_type('bistable')
                  modelType - (string) model type from list of current model types
 * Optional args: 
    * ID: (str) model's ID, populated automatically if left blank
-   * num_nodes: (int) the number of species, populated automatically if left blank
-   * num_reactions: (int) the number of reactions, populated automatically if left blank
+   * numSpecies: (int) the number of species, populated automatically if left blank
+   * numReactions: (int) the number of reactions, populated automatically if left blank
    * addReactionProbabilites: int list, the probability of adding each reaction type:
        uni-uni, uni-bi, bi-uni, bi-bi
    * initialProbabilites: int list, the initial probability of adding each reaction type when generating a
@@ -97,6 +97,7 @@ If left blank, the fields ID, num_nodes, and num_reactions will automatically be
 It's helpful to put all known info into the optional arguments and leave as few blanks as possible, but in the future I will restructure stuff so you can analyze the reactions from here.
 
 ## Set Up
+### General
 Clone this repository:
 ```git clone https://github.com/really-lilly/oscillatorDB.git```
 
@@ -111,10 +112,19 @@ conda env create -f environment.yml
 conda activate oscillatorDB
  ```
 <b> Note to self: </b> DO NOT INSTALL bson into this environment. 
+If you are building a repository that will use this database, I recommend forking it as a submodule.
 
+### Set up as a submodule
+In the terminal:
+```git submodule add https://github.com/ltatka/oscillatorDB
+git submodule init
+git submodule update
+```
 
 ## Database Schema
 Also available via ```print_schema()```
+
+<b>This section needs to be updated (2023-02-27)</b>
 
 The data base stores:
 * ID: model's ID number (str)

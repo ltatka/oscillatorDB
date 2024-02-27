@@ -22,7 +22,45 @@
 
 
 
-## Recent Updates (2022-05-27)
+## Quick Start
+* A lot of fields have been changed. For a list of current schema, us ```print_schema()```
+* Currently  these are:
+ID
+modelType
+name
+isPublished
+publishingInfo
+isEvolved
+antString
+numBoundary
+numFloat
+numReactions
+numSpecies
+combinedReactions
+deletedReactions
+reactionCounts
+addReactionProbabilities
+autocatalysisPresent
+degradationPresent
+initialProbabilities
+* Queries are done with dictionaries. For example, if you want 3 species oscillators:
+```
+import mongoMethods as mm
+
+query = {"modelType": "oscillator",
+         "numSpecies": 3}
+
+results = mm.query_database(query)
+
+# To access the results of the query, index like a list
+first_result = results[0]
+
+# To get the antimony string
+astr = first_result["antString"]
+```
+  
+
+### 2022-05-27
 * All unused or redundant fields have been removed. 
 * The field "oscillator" has been removed. To find oscillators, use "modelType": "oscillator"
 * There is now a predifined list of possible modelTypes: "oscillator" or "random" (see below)

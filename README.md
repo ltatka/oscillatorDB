@@ -27,23 +27,24 @@
 * Currently  these are:
 
 ID <br>
-modelType
-name
-isPublished
-publishingInfo
-isEvolved
-antString
-numBoundary
-numFloat
-numReactions
-numSpecies
-combinedReactions
-deletedReactions
-reactionCounts
-addReactionProbabilities
-autocatalysisPresent
-degradationPresent
-initialProbabilities
+modelType <br>
+name <br>
+isPublished <br>
+publishingInfo <br>
+isEvolved <br>
+antString <br>
+numBoundary <br>
+numFloat <br>
+numReactions <br>
+numSpecies <br>
+combinedReactions <br>
+deletedReactions <br>
+reactionCounts <br>
+addReactionProbabilities <br>
+autocatalysisPresent <br>
+degradationPresent <br>
+initialProbabilities <br>
+ <br>
 * Queries are done with dictionaries. For example, if you want 3 species oscillators:
 ```
 import mongoMethods as mm

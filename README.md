@@ -26,10 +26,8 @@
 * A lot of fields have been changed. For a list of current schema, us ```print_schema()```
 * Currently  these are:
 
-ID
-
+ID <br>
 modelType
-
 name
 isPublished
 publishingInfo

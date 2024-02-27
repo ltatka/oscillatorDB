@@ -25,8 +25,11 @@
 ## Quick Start
 * A lot of fields have been changed. For a list of current schema, us ```print_schema()```
 * Currently  these are:
+
 ID
+
 modelType
+
 name
 isPublished
 publishingInfo
